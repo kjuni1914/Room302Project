@@ -19,7 +19,7 @@ def user_login(request):
         user.save()
             # 사용자 로그인 후 리다이렉트
         login(request, user)
-        return redirect('index')
+        return redirect('/seat')
         
     else:
         return render(request, 'usage/login.html')

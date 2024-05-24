@@ -22,7 +22,7 @@ body {
 }
 
 .form-group {
-    margin-bottom: 15px;
+    margin: 15px;
 }
 
 label {
@@ -33,9 +33,10 @@ label {
 input[type="text"], input[type="password"] {
     width: 100%;
     padding: 10px;
-    margin-bottom: 5px;
+    margin: 5px;
     border: 1px solid #ccc;
     border-radius: 4px;
+    box-sizing: border-box;
 }
 
 .forgot-password {
