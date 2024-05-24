@@ -11,7 +11,7 @@ def index(request):
 
 def user_login(request):
     if request.method == 'POST':
-        username = request.POST['username']
+        username = request.POST['id']
         password = request.POST['password']
         # 학교 이메일 도메인 확인
         
