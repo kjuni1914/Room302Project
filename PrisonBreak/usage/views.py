@@ -57,14 +57,15 @@ def find_password(request):
         
         # 해당 데이터와 일치하는 사용자 조회
         try:
-            user = User.objects.get(
-                id=user_id, 
+            UserProfile.objects.get(
+                user__username=user_id, 
                 security_question=security_question, 
                 security_answer=security_answer
             )
-            # 비밀번호를 직접 알려주는 경우 (보안상 매우 위험)
-            return HttpResponse(f'당신의 비밀번호는 {user.password}입니다.')
-        except User.DoesNotExist:
+            
+            # 비밀번호 재설정 링크 예정
+            return HttpResponse('당신의 비밀번호는 이거입니다.')
+        except UserProfile.DoesNotExist:
             # 일치하는 사용자가 없는 경우
             return HttpResponse('일치하는 사용자 정보가 없습니다.')
     else:
