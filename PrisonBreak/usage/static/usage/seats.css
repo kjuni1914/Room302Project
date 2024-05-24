@@ -2,21 +2,23 @@ body {
     margin: 0px;
 }
 .seat {
-    width: 8vw;
-    height: 8vh;
+    width: 10vw;
+    /* 1 늘리고 #seat1-24 gap 2 줄이면 됨 */
+    height: 11vh;
+    /* 3늘리고 .container padding-top 4 줄이면 됨 */
 }
 .div {
     align-content: center;
 }
 .container {
-    padding-top: 18vh;
+    padding-top: 14vh;
     display: grid;
     align-items: center;
     justify-content: center;
 }
 #seat1-12,
 #seat13-24 {
-    grid-column-gap: 10vw;
+    grid-column-gap: 6vw;
     grid-template-columns: auto auto auto;
 }
 #seat25-28 {
