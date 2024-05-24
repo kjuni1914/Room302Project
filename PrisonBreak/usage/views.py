@@ -2,6 +2,8 @@ from django.contrib.auth.models import User
 from .models import UserProfile  # UserProfile 모델을 임포트합니다.
 from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login
+from django.http import HttpResponse
+
 
 def seat(request):
     return render(request, 'usage/seats.html')
