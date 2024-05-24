@@ -1,0 +1,15 @@
+.seat {
+    width: 40px;
+    height: 40px;
+}
+.div {
+    align-content: center;
+}
+#seat1-12,
+#seat13-24 {
+    display: grid;
+    padding: 20px;
+    grid-column-gap: 20px;
+    grid-row-gap: 20px;
+    grid-template-columns: auto auto auto;
+}
