@@ -23,3 +23,6 @@ def user_login(request):
         
     else:
         return render(request, 'usage/login.html')
+    
+def create_account(request):
+    return render(request, 'usage/createAccount.html')
