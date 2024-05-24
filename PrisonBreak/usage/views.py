@@ -34,7 +34,7 @@ def create_account(request):
         if not User.objects.filter(username=username).exists():
             user = User.objects.create_user(username=username, password=password)
             user.save()
-            return redirect('/login')
+            return redirect('user_login')
         else:
             return render(request, 'usage/createAccount.html', {'error': 'Username already exists'})
     else:
