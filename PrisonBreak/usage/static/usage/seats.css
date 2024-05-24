@@ -1,15 +1,28 @@
 .seat {
-    width: 40px;
-    height: 40px;
+    width: 8vw;
+    height: 8vh;
 }
 .div {
     align-content: center;
 }
+.container {
+    padding-top: 18vh;
+    display: grid;
+    align-items: center;
+    justify-content: center;
+}
 #seat1-12,
 #seat13-24 {
-    display: grid;
-    padding: 20px;
-    grid-column-gap: 20px;
-    grid-row-gap: 20px;
+    grid-column-gap: 10vw;
     grid-template-columns: auto auto auto;
+}
+#seat25-28 {
+    grid-template-columns: auto auto auto auto;
+}
+#frame {
+    background-image: url("seatFrame.png");
+    background-size: cover;
+    background-repeat: no-repeat;
+    width: 100vw;
+    height: 100vh;
 }
