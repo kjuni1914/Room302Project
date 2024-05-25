@@ -108,7 +108,7 @@
             <span class="close" onclick="closeTimeModal()">&times;</span>
             <p>Please enter the usage time(min):</p>
             <input type="number" id="usageTime" placeholder="Time in minutes">
-            <button onclick="toggleSeatStatus">Enter</button>
+            <button onclick="enterButtonClick()">Enter</button>
         </div>
     </div>
 
@@ -167,7 +167,7 @@
                         if (data.alreadyUsingSeat) {
                             alert('You are already using a seat.');
                         } else {
-                            selectedSeat.classList.add('used');
+                            // selectedSeat.classList.add('used');
                             openTimeModal();
                         }
                     } else {
@@ -183,6 +183,18 @@
                 closeModal();
                 closeTimeModal();
             }
+        }
+        
+
+        function enterButtonClick() {
+            const usageTime = document.getElementById('usageTime').value;
+            if (usageTime) { // 사용 시간이 입력되었는지 확인
+                toggleSeatStatus();
+                selectedSeat.classList.add('used');
+            } else {
+                alert("Please enter the usage time.");
+            }
+                    
         }
     </script>
 </body>
