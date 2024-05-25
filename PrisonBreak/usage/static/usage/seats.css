@@ -6,9 +6,13 @@ body {
     /* 1 늘리고 #seat1-24 gap 2 줄이면 됨 */
     height: 11vh;
     /* 3늘리고 .container padding-top 4 줄이면 됨 */
+    border-radius: 10px;
+    padding: 0px;
+    margin: 0px;
 }
-.div {
-    align-content: center;
+.table {
+    display: grid;
+    grid-template-columns: auto auto;
 }
 .container {
     padding-top: 14vh;
@@ -27,10 +31,6 @@ body {
 #frame {
     width: 100vw;
     height: 100vh;
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
 }
 .modal {
     display: none; 
@@ -67,5 +67,10 @@ body {
     cursor: pointer;
 }
 .used {
-    background-color: red;
+    background-color: deeppink;
 }
+svg{
+    position: absolute;
+    z-index: -1;
+}
+

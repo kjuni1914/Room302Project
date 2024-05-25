@@ -9,31 +9,80 @@
 </head>
 <body>
     <div id="frame">
+        <svg width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
+            <line x1="38vw" y1="43vh" x2="88vw" y2="43vh" stroke="black" stroke-width="4" />
+            <line x1="63vw" y1="13vh" x2="63vw" y2="73vh" stroke="black" stroke-width="4" />
+            <rect x="20vw" y="0vh" width="60vw" height="1vh" fill="lightblue" stroke="black" stroke-width="1" />
+            <line x1="30vw" y1="0" x2="30vw" y2="1vh" stroke="black" stroke-width="1" />
+            <line x1="40vw" y1="0" x2="40vw" y2="1vh" stroke="black" stroke-width="1" />
+            <line x1="50vw" y1="0" x2="50vw" y2="1vh" stroke="black" stroke-width="1" />
+            <line x1="60vw" y1="0" x2="60vw" y2="1vh" stroke="black" stroke-width="1" />
+            <line x1="70vw" y1="0" x2="70vw" y2="1vh" stroke="black" stroke-width="1" />
+            <rect x="10vw" y="98.5vh" width="12vw" height="1.5vh" fill="grey" stroke="black" stroke-width="1" />
+            <text x="16vw" y="99.5vh" fill="black" font-size="1.8vh" text-anchor="middle" dominant-baseline="middle">Door</text>
+            <rect x="78vw" y="98.5vh" width="12vw" height="1.5vh" fill="grey" stroke="black" stroke-width="1" />
+            <text x="84vw" y="99.5vh" fill="black" font-size="1.8vh" text-anchor="middle" dominant-baseline="middle">Door</text>
+        </svg>
         <div>
             <div class="container" id="seat1-12">
                 <!-- 좌석 버튼들 -->
-                {% for seat in seats %}
+                <div class="table">
+                    {% for seat in seats %}
+                    {% if seat.seat_number <= 4 %}
                     <button id="seat{{ seat.seat_number }}" class="seat{% if seat.is_used %} used{% endif %}">
-                        {{ seat.seat_number }}
-                    </button>
-                    {% if forloop.counter0|divisibleby:4 and not forloop.first %}
-                        <br />
-                    {% endif %}
-                {% endfor %}
+                                {{ seat.seat_number }}
+                                <body><div>
+                            </button>
+                        {% endif %}
+                    {% endfor %}
+                </div>
+                <div class="table">
+                    {% for seat in seats %}
+                        {% if seat.seat_number > 4 and seat.seat_number <= 8 %}
+                            <button id="seat{{ seat.seat_number }}" class="seat{% if seat.is_used %} used{% endif %}">{{ seat.seat_number }}</button>
+                        {% endif %}
+                    {% endfor %}
+                </div>
+                <div class="table">
+                    {% for seat in seats %}
+                        {% if seat.seat_number > 8 and seat.seat_number <= 12 %}
+                            <button id="seat{{ seat.seat_number }}" class="seat{% if seat.is_used %} used{% endif %}">
+                                {{ seat.seat_number }}
+                            </button>
+                        {% endif %}
+                    {% endfor %}
+                </div>
             </div>
-        </div>
-        <div class="container" id="seat13-24">
-            <!-- 나머지 좌석 버튼들 -->
-            {% for seat in seats %}
-                {% if seat.seat_number > 12 and seat.seat_number <= 24 %}
-                    <button id="seat{{ seat.seat_number }}" class="seat{% if seat.is_used %} used{% endif %}">
-                        {{ seat.seat_number }}
-                    </button>
-                    {% if forloop.counter0|divisibleby:4 and not forloop.first %}
-                        <br />
-                    {% endif %}
-                {% endif %}
-            {% endfor %}
+            <div class="container" id="seat13-24">
+                <!-- 나머지 좌석 버튼들 -->
+                <div class="table">
+                    {% for seat in seats %}
+                        {% if seat.seat_number > 12 and seat.seat_number <= 16 %}
+                            <button id="seat{{ seat.seat_number }}" class="seat{% if seat.is_used %} used{% endif %}">
+                                {{ seat.seat_number }}
+                            </button>
+                        {% endif %}
+                    {% endfor %}
+                </div>
+                <div class="table">
+                    {% for seat in seats %}
+                        {% if seat.seat_number > 16 and seat.seat_number <= 20 %}
+                            <button id="seat{{ seat.seat_number }}" class="seat{% if seat.is_used %} used{% endif %}">
+                                {{ seat.seat_number }}
+                            </button>
+                        {% endif %}
+                    {% endfor %}
+                </div>
+                <div class="table">
+                    {% for seat in seats %}
+                        {% if seat.seat_number > 20 and seat.seat_number <= 24 %}
+                            <button id="seat{{ seat.seat_number }}" class="seat{% if seat.is_used %} used{% endif %}">
+                                {{ seat.seat_number }}
+                            </button>
+                        {% endif %}
+                    {% endfor %}
+                </div>
+            </div>
         </div>
         <div class="container" id="seat25-28">
             <!-- 나머지 좌석 버튼들 -->
@@ -46,21 +95,6 @@
             {% endfor %}
         </div>
     </div>
-    <svg width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
-        <line x1="38vw" y1="43vh" x2="88vw" y2="43vh" stroke="black" stroke-width="4" />
-        <line x1="63vw" y1="13vh" x2="63vw" y2="73vh" stroke="black" stroke-width="4" />
-        <rect x="20vw" y="0vh" width="60vw" height="1vh" fill="lightblue" stroke="black" stroke-width="1" />
-        <line x1="30vw" y1="0" x2="30vw" y2="1vh" stroke="black" stroke-width="1" />
-        <line x1="40vw" y1="0" x2="40vw" y2="1vh" stroke="black" stroke-width="1" />
-        <line x1="50vw" y1="0" x2="50vw" y2="1vh" stroke="black" stroke-width="1" />
-        <line x1="60vw" y1="0" x2="60vw" y2="1vh" stroke="black" stroke-width="1" />
-        <line x1="70vw" y1="0" x2="70vw" y2="1vh" stroke="black" stroke-width="1" />
-        <rect x="10vw" y="98.5vh" width="12vw" height="1.5vh" fill="grey" stroke="black" stroke-width="1" />
-        <text x="16vw" y="99.5vh" fill="black" font-size="1.8vh" text-anchor="middle" dominant-baseline="middle">Door</text>
-        <rect x="78vw" y="98.5vh" width="12vw" height="1.5vh" fill="grey" stroke="black" stroke-width="1" />
-        <text x="84vw" y="99.5vh" fill="black" font-size="1.8vh" text-anchor="middle" dominant-baseline="middle">Door</text>
-    </svg>
-
     <div id="seatModal" class="modal">
         <div class="modal-content">
             <span class="close" onclick="closeModal()">&times;</span>
