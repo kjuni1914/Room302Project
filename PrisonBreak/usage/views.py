@@ -14,12 +14,25 @@ def update_seat_status(request):
         seat_number = request.POST.get('seat_number')
         action = request.POST.get('action')
         seat = Seat.objects.get(seat_number=seat_number)
+        user = request.user
         
+         # 사용자가 'use' 액션을 요청하고 이미 다른 좌석을 사용 중인 경우
+        if action == 'use' and Seat.objects.filter(user=user, is_used=True).exists():
+            return JsonResponse({'status': 'failure', 'message': 'User is already using another seat.'})
+
         if action == 'use':
+            # 좌석을 사용하도록 설정하고 사용자를 할당
             seat.is_used = True
+            seat.user = user
         elif action == 'end':
-            seat.is_used = False
-        
+            # 좌석 사용을 종료하고, 좌석을 사용 중인 사용자가 현재 요청을 보낸 사용자인지 확인
+            if seat.user == user:
+                seat.is_used = False
+                seat.user = None  # 좌석 사용자 정보를 제거
+            else:
+                # 현재 사용자가 이 좌석을 사용 안하고 있으면
+                return JsonResponse({'status': 'failure', 'message': 'This seat is not used by the current user.'})
+
         seat.save()
         return JsonResponse({'status': 'success'})
     return JsonResponse({'status': 'failure'})

@@ -68,6 +68,15 @@
             <button id="actionButton" onclick="toggleSeatStatus()">Action</button>
         </div>
     </div>
+    <!-- time 모달 추가 -->
+    <div id="timeModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeTimeModal()">&times;</span>
+            <p>Please enter the usage time(min):</p>
+            <input type="number" id="usageTime" placeholder="Time in minutes">
+            <button onclick="toggleSeatStatus">Enter</button>
+        </div>
+    </div>
 
     <script>
         document.querySelectorAll('.seat').forEach(button => {
@@ -95,10 +104,19 @@
             document.getElementById('seatModal').style.display = 'none';
         }
 
+        function openTimeModal() {
+            document.getElementById('timeModal').style.display = 'block';
+        }
+
+        function closeTimeModal() {
+            document.getElementById('timeModal').style.display = 'none';
+        }
+
         function toggleSeatStatus() {
             const action = selectedSeat.classList.contains('used') ? 'end' : 'use';
             const seatNumber = selectedSeat.innerText;
             const csrfToken = '{{ csrf_token }}';
+            const usageTime = document.getElementById('usageTime').value;
 
             fetch('/update_seat_status/', {
                 method: 'POST',
@@ -112,9 +130,14 @@
             .then(data => {
                 if (data.status === 'success') {
                     if (action === 'use') {
-                        selectedSeat.classList.add('used');
+                        if (data.alreadyUsingSeat) {
+                            alert('You are already using a seat.');
+                        } else {
+                            selectedSeat.classList.add('used');
+                            openTimeModal();
+                        }
                     } else {
-                        selectedSeat.classList.remove('used');
+                    selectedSeat.classList.remove('used');
                     }
                 }
                 closeModal();
@@ -124,6 +147,7 @@
         window.onclick = function(event) {
             if (event.target == document.getElementById('seatModal')) {
                 closeModal();
+                closeTimeModal();
             }
         }
     </script>
