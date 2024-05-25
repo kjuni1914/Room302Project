@@ -74,17 +74,27 @@ def change_password(request):
         user_id = request.POST.get('id')
         security_question = request.POST.get('security-question')
         security_answer = request.POST.get('security-answer')
+        new_password = request.POST.get('new_password')
+        reenter_password = request.POST.get('reenter_password')
+        
+        # 새로운 비밀번호와 재입력한 비밀번호 일치 여부 확인
+        if new_password != reenter_password:
+            return HttpResponse('재입력한 비밀번호가 일치하지 않습니다.')
         
         # 해당 데이터와 일치하는 사용자 조회
         try:
-            UserProfile.objects.get(
+            user_profile = UserProfile.objects.get(
                 user__username=user_id, 
                 security_question=security_question, 
                 security_answer=security_answer
             )
             
-            # 비밀번호 재설정 링크 예정
-            return HttpResponse('당신의 비밀번호는 이거입니다.')
+            # 사용자의 비밀번호 업데이트
+            user = user_profile.user
+            user.set_password(new_password)
+            user.save()
+            
+            return HttpResponse('비밀번호가 성공적으로 변경되었습니다.')
         except UserProfile.DoesNotExist:
             # 일치하는 사용자가 없는 경우
             return HttpResponse('일치하는 사용자 정보가 없습니다.')
