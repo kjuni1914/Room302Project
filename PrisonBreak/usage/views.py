@@ -7,7 +7,6 @@ from django.http import HttpResponse
 
 def seat(request):
     return render(request, 'usage/seats.html')
-# Create your views here.
 
 def index(request):
     return render(request, 'usage/login.html')
@@ -32,8 +31,13 @@ def create_account(request):
     if request.method == 'POST':
         username = request.POST['id']
         password = request.POST['password']
+        reenter_password = request.POST['reenter_password']
         security_question = request.POST['security_question']
         security_answer = request.POST['security_answer']
+        
+        # 비밀번호 재확인 검사
+        if password != reenter_password:
+            return render(request, 'usage/createAccount.html', {'error': 'Passwords do not match'})
         
         # 새로운 사용자 생성
         if not User.objects.filter(username=username).exists():
@@ -42,7 +46,7 @@ def create_account(request):
             # User 객체와 함께 UserProfile 객체도 생성합니다.
             user_profile = UserProfile(user=user, security_question=security_question, security_answer=security_answer)
             user_profile.save()
-            return redirect('user_login')
+            return redirect('/')
         else:
             return render(request, 'usage/createAccount.html', {'error': 'Username already exists'})
     else:
