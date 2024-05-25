@@ -5,29 +5,18 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login Page</title>
-    <link rel="stylesheet" href="{%static 'usage/login.css'%}">
-    <script>
-        document.getElementById('loginForm').addEventListener('submit', function(event) {
-            event.preventDefault(); 
-        
-            const id = document.getElementById('id').value;
-            const password = document.getElementById('password').value;
-            const errorMessage = document.getElementById('errorMessage');
-        
-        
-            if (id === 'correctID' && password === 'correctPassword') { 
-                window.location.href = 'seats.html';
-            } else {
-                errorMessage.textContent = 'Invalid ID or Password. Please try again.';
-            }
-        });
-    </script>
+    <link rel="stylesheet" href="{% static 'usage/login.css' %}">
 </head>
 <body>
     <div class="login-container">
-        <img src="{%static 'usage/logo.png'%}" alt="University Logo" class="logo">
+        <img src="{% static 'usage/logo.png' %}" alt="University Logo" class="logo">
         <form id="loginForm" method="post">
             {% csrf_token %}
+            <div class="error-message" id="errorMessage">
+                {% if error %}
+                    {{ error }}
+                {% endif %}
+            </div>
             <div class="form-group">
                 <label for="id">Student ID</label>
                 <input type="text" id="id" name="id" required>
@@ -38,7 +27,6 @@
                 <a href="{% url 'change_password' %}" class="changePassword">Forgot your password?</a>
             </div>
             <button type="submit" class="login-button">Login</button>
-            <div class="error-message" id="errorMessage"></div>
         </form>
         <a href="{% url 'create_account' %}" class="create-account">Create account</a>
     </div>

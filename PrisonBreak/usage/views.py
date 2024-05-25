@@ -45,16 +45,22 @@ def user_login(request):
         username = request.POST['id']
         password = request.POST['password']
 
+        try:
+            user = User.objects.get(username=username)
+        except User.DoesNotExist:
+            return render(request, 'usage/login.html', {'error': 'ID not found'})
+
         # 사용자 인증
         user = authenticate(request, username=username, password=password)
         if user is not None:
             login(request, user)
             return redirect('/seat')
         else:
-            # 인증 실패 시 로그인 페이지로 다시 이동
-            return render(request, 'usage/login.html', {'error': 'Invalid credentials'})
+            # 비밀번호가 일치하지 않을 때
+            return render(request, 'usage/login.html', {'error': 'Incorrect password'})
     else:
         return render(request, 'usage/login.html')
+
     
 def create_account(request):
     if request.method == 'POST':
