@@ -2,11 +2,27 @@ from django.contrib.auth.models import User
 from .models import UserProfile  # UserProfile 모델을 임포트합니다.
 from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login
-from django.http import HttpResponse
-
+from django.http import HttpResponse, JsonResponse
+from .models import Seat
 
 def seat(request):
-    return render(request, 'usage/seats.html')
+    seats = Seat.objects.all()
+    return render(request, 'usage/seats.html', {'seats': seats})
+
+def update_seat_status(request):
+    if request.method == 'POST':
+        seat_number = request.POST.get('seat_number')
+        action = request.POST.get('action')
+        seat = Seat.objects.get(seat_number=seat_number)
+        
+        if action == 'use':
+            seat.is_used = True
+        elif action == 'end':
+            seat.is_used = False
+        
+        seat.save()
+        return JsonResponse({'status': 'success'})
+    return JsonResponse({'status': 'failure'})
 
 def index(request):
     return render(request, 'usage/login.html')

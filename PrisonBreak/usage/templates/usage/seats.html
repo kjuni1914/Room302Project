@@ -1,197 +1,131 @@
 {% load static %}
+<!DOCTYPE html>
 <html lang="kr">
-    <head>
-        <meta charset="UTF-8" />
-        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <title>Document</title>
-        <link rel="stylesheet" href="{% static 'usage/seats.css' %}" />
-    </head>
-    <body>
-        <div id="frame">
-            <div>
-                <div class="container" id="seat1-12">
-                    <div>
-                        <button id="seat1" class="seat">1</button
-                        ><button id="seat2" class="seat">2</button> <br />
-                        <button id="seat3" class="seat">3</button
-                        ><button id="seat4" class="seat">4</button>
-                    </div>
-                    <div>
-                        <button id="seat5" class="seat">5</button
-                        ><button id="seat6" class="seat">6</button> <br />
-                        <button id="seat7" class="seat">7</button
-                        ><button id="seat8" class="seat">8</button>
-                    </div>
-                    <div>
-                        <button id="seat9" class="seat">9</button
-                        ><button id="seat10" class="seat">10</button> <br />
-                        <button id="seat11" class="seat">11</button
-                        ><button id="seat12" class="seat">12</button>
-                    </div>
-                </div>
-                <div class="container" id="seat13-24">
-                    <div>
-                        <button id="seat13" class="seat">13</button
-                        ><button id="seat14" class="seat">14</button> <br />
-                        <button id="seat15" class="seat">15</button
-                        ><button id="seat16" class="seat">16</button>
-                    </div>
-                    <div>
-                        <button id="seat17" class="seat">17</button
-                        ><button id="seat18" class="seat">18</button> <br />
-                        <button id="seat19" class="seat">19</button
-                        ><button id="seat20" class="seat">20</button>
-                    </div>
-                    <div>
-                        <button id="seat21" class="seat">21</button
-                        ><button id="seat22" class="seat">22</button> <br />
-                        <button id="seat23" class="seat">23</button
-                        ><button id="seat24" class="seat">24</button>
-                    </div>
-                </div>
-            </div>
-            <div class="container" id="seat25-28">
-                <button id="seat25" class="seat">25</button
-                ><button id="seat26" class="seat">26</button
-                ><button id="seat27" class="seat">27</button
-                ><button id="seat28" class="seat">28</button>
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <link rel="stylesheet" href="{% static 'usage/seats.css' %}" />
+</head>
+<body>
+    <div id="frame">
+        <div>
+            <div class="container" id="seat1-12">
+                <!-- 좌석 버튼들 -->
+                {% for seat in seats %}
+                    <button id="seat{{ seat.seat_number }}" class="seat{% if seat.is_used %} used{% endif %}">
+                        {{ seat.seat_number }}
+                    </button>
+                    {% if forloop.counter0|divisibleby:4 and not forloop.first %}
+                        <br />
+                    {% endif %}
+                {% endfor %}
             </div>
         </div>
-        <svg width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
-            <line
-                x1="38vw"
-                y1="43vh"
-                x2="88vw"
-                y2="43vh"
-                stroke="black"
-                stroke-width="4"
-            />
-            <line
-                x1="63vw"
-                y1="13vh"
-                x2="63vw"
-                y2="73vh"
-                stroke="black"
-                stroke-width="4"
-            />
-            <rect
-                x="20vw"
-                y="0vh"
-                width="60vw"
-                height="1vh"
-                fill="lightblue"
-                stroke="black"
-                stroke-width="1"
-            />
-            <line
-                x1="30vw"
-                y1="0"
-                x2="30vw"
-                y2="1vh"
-                stroke="black"
-                stroke-width="1"
-            />
-            <line
-                x1="40vw"
-                y1="0"
-                x2="40vw"
-                y2="1vh"
-                stroke="black"
-                stroke-width="1"
-            />
-            <line
-                x1="50vw"
-                y1="0"
-                x2="50vw"
-                y2="1vh"
-                stroke="black"
-                stroke-width="1"
-            />
-            <line
-                x1="60vw"
-                y1="0"
-                x2="60vw"
-                y2="1vh"
-                stroke="black"
-                stroke-width="1"
-            />
-            <line
-                x1="70vw"
-                y1="0"
-                x2="70vw"
-                y2="1vh"
-                stroke="black"
-                stroke-width="1"
-            />
-            <rect
-                x="10vw"
-                y="98.5vh"
-                width="12vw"
-                height="1.5vh"
-                fill="grey"
-                stroke="black"
-                stroke-width="1"
-            />
-            <text
-                x="16vw"
-                y="99.5vh"
-                fill="black"
-                font-size="1.8vh"
-                text-anchor="middle"
-                dominant-baseline="middle"
-            >
-                Door
-            </text>
-            <rect
-                x="78vw"
-                y="98.5vh"
-                width="12vw"
-                height="1.5vh"
-                fill="grey"
-                stroke="black"
-                stroke-width="1"
-            />
-            <text
-                x="84vw"
-                y="99.5vh"
-                fill="black"
-                font-size="1.8vh"
-                text-anchor="middle"
-                dominant-baseline="middle"
-            >
-                Door
-            </text>
-        </svg>
+        <div class="container" id="seat13-24">
+            <!-- 나머지 좌석 버튼들 -->
+            {% for seat in seats %}
+                {% if seat.seat_number > 12 and seat.seat_number <= 24 %}
+                    <button id="seat{{ seat.seat_number }}" class="seat{% if seat.is_used %} used{% endif %}">
+                        {{ seat.seat_number }}
+                    </button>
+                    {% if forloop.counter0|divisibleby:4 and not forloop.first %}
+                        <br />
+                    {% endif %}
+                {% endif %}
+            {% endfor %}
+        </div>
+        <div class="container" id="seat25-28">
+            <!-- 나머지 좌석 버튼들 -->
+            {% for seat in seats %}
+                {% if seat.seat_number > 24 %}
+                    <button id="seat{{ seat.seat_number }}" class="seat{% if seat.is_used %} used{% endif %}">
+                        {{ seat.seat_number }}
+                    </button>
+                {% endif %}
+            {% endfor %}
+        </div>
+    </div>
+    <svg width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
+        <line x1="38vw" y1="43vh" x2="88vw" y2="43vh" stroke="black" stroke-width="4" />
+        <line x1="63vw" y1="13vh" x2="63vw" y2="73vh" stroke="black" stroke-width="4" />
+        <rect x="20vw" y="0vh" width="60vw" height="1vh" fill="lightblue" stroke="black" stroke-width="1" />
+        <line x1="30vw" y1="0" x2="30vw" y2="1vh" stroke="black" stroke-width="1" />
+        <line x1="40vw" y1="0" x2="40vw" y2="1vh" stroke="black" stroke-width="1" />
+        <line x1="50vw" y1="0" x2="50vw" y2="1vh" stroke="black" stroke-width="1" />
+        <line x1="60vw" y1="0" x2="60vw" y2="1vh" stroke="black" stroke-width="1" />
+        <line x1="70vw" y1="0" x2="70vw" y2="1vh" stroke="black" stroke-width="1" />
+        <rect x="10vw" y="98.5vh" width="12vw" height="1.5vh" fill="grey" stroke="black" stroke-width="1" />
+        <text x="16vw" y="99.5vh" fill="black" font-size="1.8vh" text-anchor="middle" dominant-baseline="middle">Door</text>
+        <rect x="78vw" y="98.5vh" width="12vw" height="1.5vh" fill="grey" stroke="black" stroke-width="1" />
+        <text x="84vw" y="99.5vh" fill="black" font-size="1.8vh" text-anchor="middle" dominant-baseline="middle">Door</text>
+    </svg>
 
-        <div id="seatModal" class="modal">
-            <div class="modal-content">
-                <span class="close" onclick="closeModal()">&times;</span>
-                <p id="modalText"></p>
-            </div>
+    <div id="seatModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal()">&times;</span>
+            <p id="modalText"></p>
+            <button id="actionButton" onclick="toggleSeatStatus()">Action</button>
         </div>
-    
-        <script>
-            document.querySelectorAll('.seat').forEach(button => {
-                button.addEventListener('click', function() {
-                    openModal(this.innerText);
-                });
+    </div>
+
+    <script>
+        document.querySelectorAll('.seat').forEach(button => {
+            button.addEventListener('click', function() {
+                openModal(this);
             });
-    
-            function openModal(seatNumber) {
-                document.getElementById('modalText').innerText = 'Seat Number: ' + seatNumber;
-                document.getElementById('seatModal').style.display = 'block';
-            }
-    
-            function closeModal() {
-                document.getElementById('seatModal').style.display = 'none';
-            }
-    
-            window.onclick = function(event) {
-                if (event.target == document.getElementById('seatModal')) {
-                    closeModal();
-                }
-            }
-        </script>
+        });
 
-    </body>
+        let selectedSeat;
+
+        function openModal(seat) {
+            selectedSeat = seat;
+            const seatNumber = seat.innerText;
+            document.getElementById('modalText').innerText = 'Seat Number: ' + seatNumber;
+            const actionButton = document.getElementById('actionButton');
+            if (seat.classList.contains('used')) {
+                actionButton.innerText = 'End';
+            } else {
+                actionButton.innerText = 'Use';
+            }
+            document.getElementById('seatModal').style.display = 'block';
+        }
+
+        function closeModal() {
+            document.getElementById('seatModal').style.display = 'none';
+        }
+
+        function toggleSeatStatus() {
+            const action = selectedSeat.classList.contains('used') ? 'end' : 'use';
+            const seatNumber = selectedSeat.innerText;
+            const csrfToken = '{{ csrf_token }}';
+
+            fetch('/update_seat_status/', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                    'X-CSRFToken': csrfToken,
+                },
+                body: `seat_number=${seatNumber}&action=${action}`,
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.status === 'success') {
+                    if (action === 'use') {
+                        selectedSeat.classList.add('used');
+                    } else {
+                        selectedSeat.classList.remove('used');
+                    }
+                }
+                closeModal();
+            });
+        }
+
+        window.onclick = function(event) {
+            if (event.target == document.getElementById('seatModal')) {
+                closeModal();
+            }
+        }
+    </script>
+</body>
 </html>

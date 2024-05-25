@@ -21,3 +21,7 @@ class UserProfile(models.Model):
 
     def __str__(self):
         return self.user.username
+    
+class Seat(models.Model):
+    seat_number = models.IntegerField(unique=True)
+    is_used = models.BooleanField(default=False)
