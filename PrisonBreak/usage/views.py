@@ -52,7 +52,7 @@ def create_account(request):
     else:
         return render(request, 'usage/createAccount.html')
     
-def find_password(request):
+def change_password(request):
     if request.method == "POST":
         # 사용자 입력 데이터 가져오기
         user_id = request.POST.get('id')
@@ -74,4 +74,4 @@ def find_password(request):
             return HttpResponse('일치하는 사용자 정보가 없습니다.')
     else:
         # GET 요청인 경우, 폼을 다시 렌더링
-        return render(request, 'usage/findPassword.html')
+        return render(request, 'usage/changePassword.html')
