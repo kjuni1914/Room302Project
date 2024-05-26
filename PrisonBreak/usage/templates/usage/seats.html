@@ -195,10 +195,10 @@
                     selectedSeat.classList.remove("empty");
                     selectedSeat.classList.add("used");
                     setSeatColor(selectedSeat);
+                    closeTimeModal();
                 } else {
                     alert("Please enter the usage time.");
                 }
-                closeTimeModal();
             }
 
             let colorBtn = "";
