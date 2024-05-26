@@ -10,13 +10,20 @@
     <body>
         <div id="status">
             <div style="display: flex; flex-direction: row; align-items: center">
-                <button class="circle" id="using" style="margin-right: 10px"></button>
+                <button class="circle" id="used" style="margin-right: 10px" onclick="openColorModal('used')"></button>
                 using:
             </div>
             <br />
             <div style="display: flex; flex-direction: row; align-items: center">
-                <button class="circle" id="empty" style="margin-right: 10px"></button>
+                <button class="circle" id="empty" style="margin-right: 10px" onclick="openColorModal('empty')"></button>
                 empty:
+            </div>
+            <div id="colorModal" class="modal">
+                <div class="modal-content">
+                    <p>색을 선택하세요:</p>
+                    <input type="color" id="colorPicker" />
+                    <button id="applyColor">적용</button>
+                </div>
             </div>
         </div>
 
@@ -37,46 +44,43 @@
             </svg>
             <div>
                 <div class="container" id="seat1-12">
-                    <!-- 좌석 버튼들 -->
                     <div class="table">
                         {% for seat in seats %} {% if seat.seat_number <= 4 %}
-                        <button id="seat{{ seat.seat_number }}" class="seat{% if seat.is_used %} used{% endif %}">{{ seat.seat_number }}</button>
+                        <button id="seat{{ seat.seat_number }}" class="seat {% if seat.is_used %}used{% else %}empty{% endif %}">{{ seat.seat_number }}</button>
                         {% endif %} {% endfor %}
                     </div>
                     <div class="table">
                         {% for seat in seats %} {% if seat.seat_number > 4 and seat.seat_number <= 8 %}
-                        <button id="seat{{ seat.seat_number }}" class="seat{% if seat.is_used %} used{% endif %}">{{ seat.seat_number }}</button>
+                        <button id="seat{{ seat.seat_number }}" class="seat {% if seat.is_used %}used{% else %}empty{% endif %}">{{ seat.seat_number }}</button>
                         {% endif %} {% endfor %}
                     </div>
                     <div class="table">
                         {% for seat in seats %} {% if seat.seat_number > 8 and seat.seat_number <= 12 %}
-                        <button id="seat{{ seat.seat_number }}" class="seat{% if seat.is_used %} used{% endif %}">{{ seat.seat_number }}</button>
+                        <button id="seat{{ seat.seat_number }}" class="seat {% if seat.is_used %}used{% else %}empty{% endif %}">{{ seat.seat_number }}</button>
                         {% endif %} {% endfor %}
                     </div>
                 </div>
                 <div class="container" id="seat13-24">
-                    <!-- 나머지 좌석 버튼들 -->
                     <div class="table">
                         {% for seat in seats %} {% if seat.seat_number > 12 and seat.seat_number <= 16 %}
-                        <button id="seat{{ seat.seat_number }}" class="seat{% if seat.is_used %} used{% endif %}">{{ seat.seat_number }}</button>
+                        <button id="seat{{ seat.seat_number }}" class="seat {% if seat.is_used %}used{% else %}empty{% endif %}">{{ seat.seat_number }}</button>
                         {% endif %} {% endfor %}
                     </div>
                     <div class="table">
                         {% for seat in seats %} {% if seat.seat_number > 16 and seat.seat_number <= 20 %}
-                        <button id="seat{{ seat.seat_number }}" class="seat{% if seat.is_used %} used{% endif %}">{{ seat.seat_number }}</button>
+                        <button id="seat{{ seat.seat_number }}" class="seat {% if seat.is_used %}used{% else %}empty{% endif %}">{{ seat.seat_number }}</button>
                         {% endif %} {% endfor %}
                     </div>
                     <div class="table">
                         {% for seat in seats %} {% if seat.seat_number > 20 and seat.seat_number <= 24 %}
-                        <button id="seat{{ seat.seat_number }}" class="seat{% if seat.is_used %} used{% endif %}">{{ seat.seat_number }}</button>
+                        <button id="seat{{ seat.seat_number }}" class="seat {% if seat.is_used %}used{% else %}empty{% endif %}">{{ seat.seat_number }}</button>
                         {% endif %} {% endfor %}
                     </div>
                 </div>
             </div>
             <div class="container" id="seat25-28">
-                <!-- 나머지 좌석 버튼들 -->
                 {% for seat in seats %} {% if seat.seat_number > 24 %}
-                <button id="seat{{ seat.seat_number }}" class="seat{% if seat.is_used %} used{% endif %}">{{ seat.seat_number }}</button>
+                <button id="seat{{ seat.seat_number }}" class="seat {% if seat.is_used %}used{% else %}empty{% endif %}">{{ seat.seat_number }}</button>
                 {% endif %} {% endfor %}
             </div>
         </div>
@@ -180,6 +184,35 @@
                     alert("Please enter the usage time.");
                 }
             }
+
+            let colorBtn = "";
+
+            function openColorModal(statusBtn) {
+                colorBtn = statusBtn;
+                document.getElementById("colorModal").style.display = "block";
+            }
+
+            function closeColorModal() {
+                document.getElementById("colorModal").style.display = "none";
+            }
+
+            document.getElementById("applyColor").onclick = function () {
+                const color = document.getElementById("colorPicker").value;
+                document.getElementById(colorBtn).style.backgroundColor = color;
+
+                const seatButtons = document.querySelectorAll(`.seat.${colorBtn}`);
+                seatButtons.forEach((button) => {
+                    button.style.backgroundColor = color;
+                });
+
+                document.getElementById("colorModal").style.display = "none";
+            };
+
+            window.onclick = function (event) {
+                if (event.target == document.getElementById("colorModal")) {
+                    closeColorModal();
+                }
+            };
         </script>
     </body>
 </html>
