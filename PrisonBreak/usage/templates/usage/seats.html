@@ -144,7 +144,17 @@
             }
 
             function toggleSeatStatus() {
-                const action = selectedSeat.classList.contains("used") ? "end" : "use";
+                if (selectedSeat.classList.contains("used")) {
+                    // 좌석 사용 종료
+                    updateSeatStatus("end");
+                } else {
+                    // 좌석 사용 시작
+                    closeModal();
+                    openTimeModal();
+                }
+            }
+
+            function updateSeatStatus(action) {
                 const seatNumber = selectedSeat.innerText;
                 const csrfToken = "{{ csrf_token }}";
                 const usageTime = document.getElementById("usageTime").value;
@@ -155,24 +165,22 @@
                         "Content-Type": "application/x-www-form-urlencoded",
                         "X-CSRFToken": csrfToken,
                     },
-                    body: `seat_number=${seatNumber}&action=${action}`,
+                    body: `seat_number=${seatNumber}&action=${action}&usage_time=${usageTime}`,
                 })
                     .then((response) => response.json())
                     .then((data) => {
                         if (data.status === "success") {
                             if (action === "use") {
-                                if (data.alreadyUsingSeat) {
-                                    alert("You are already using a seat.");
-                                } else {
-                                    openTimeModal();
-                                }
+                                selectedSeat.classList.remove("empty");
+                                selectedSeat.classList.add("used");
                             } else {
                                 selectedSeat.classList.remove("used");
                                 selectedSeat.classList.add("empty");
-                                setSeatColor(selectedSeat);
+                                closeModal();
                             }
+                            setSeatColor(selectedSeat);
                         }
-                        closeModal();
+                        closeTimeModal();
                     });
             }
 
@@ -191,11 +199,7 @@
             function enterButtonClick() {
                 const usageTime = document.getElementById("usageTime").value;
                 if (usageTime) {
-                    toggleSeatStatus();
-                    selectedSeat.classList.remove("empty");
-                    selectedSeat.classList.add("used");
-                    setSeatColor(selectedSeat);
-                    closeTimeModal();
+                    updateSeatStatus("use");
                 } else {
                     alert("Please enter the usage time.");
                 }
