@@ -135,6 +135,14 @@
                 document.getElementById("timeModal").style.display = "none";
             }
 
+            function setSeatColor(seat) {
+                if (seat.classList.contains("used")) {
+                    seat.style.backgroundColor = document.getElementById("used").style.backgroundColor;
+                } else {
+                    seat.style.backgroundColor = document.getElementById("empty").style.backgroundColor;
+                }
+            }
+
             function toggleSeatStatus() {
                 const action = selectedSeat.classList.contains("used") ? "end" : "use";
                 const seatNumber = selectedSeat.innerText;
@@ -156,12 +164,12 @@
                                 if (data.alreadyUsingSeat) {
                                     alert("You are already using a seat.");
                                 } else {
-                                    // selectedSeat.classList.add('used');
                                     openTimeModal();
                                 }
                             } else {
                                 selectedSeat.classList.remove("used");
                                 selectedSeat.classList.add("empty");
+                                setSeatColor(selectedSeat);
                             }
                         }
                         closeModal();
@@ -171,7 +179,6 @@
             window.onclick = function (event) {
                 if (event.target == document.getElementById("seatModal")) {
                     closeModal();
-                    closeTimeModal();
                 }
                 if (event.target == document.getElementById("timeModal")) {
                     closeTimeModal();
@@ -184,13 +191,10 @@
             function enterButtonClick() {
                 const usageTime = document.getElementById("usageTime").value;
                 if (usageTime) {
-                    // 사용 시간이 입력되었는지 확인
                     toggleSeatStatus();
                     selectedSeat.classList.remove("empty");
                     selectedSeat.classList.add("used");
-                    //버그생김 컬러 바꾼상태로 자리 사용하거나 사용 끝내면 css에 정의돼있는 color 받아와서 세팅한 색으로 안됨
-                    //해당 버튼 조건 보고 위에서 색 받아와서 바꾸면 해결은 될듯
-                    // selectedSeat.style.backgroundColor =
+                    setSeatColor(selectedSeat);
                 } else {
                     alert("Please enter the usage time.");
                 }
