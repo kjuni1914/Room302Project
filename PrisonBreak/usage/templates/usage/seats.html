@@ -219,14 +219,21 @@
             document.getElementById("applyColor").onclick = function () {
                 const color = document.getElementById("colorPicker").value;
                 document.getElementById(colorBtn).style.backgroundColor = color;
+                document.getElementById(colorBtn).style.color = complementColor(color);
 
                 const seatButtons = document.querySelectorAll(`.seat.${colorBtn}`);
                 seatButtons.forEach((button) => {
                     button.style.backgroundColor = color;
+                    button.style.color = complementColor(color);
                 });
 
                 document.getElementById("colorModal").style.display = "none";
             };
+            function complementColor(btncolor) {
+                const color = parseInt(btncolor.slice(1), 16);
+                const complement = 0xffffff ^ color;
+                return "#" + complement.toString(16).padStart(6, "0");
+            }
         </script>
     </body>
 </html>
