@@ -9,6 +9,7 @@ body {
     border-radius: 10px;
     padding: 0px;
     margin: 0px;
+    border: 1px solid #000;
 }
 .table {
     display: grid;
@@ -66,6 +67,7 @@ body {
     text-decoration: none;
     cursor: pointer;
 }
+
 /* seat color */
 .empty {
     background-color: blue;
