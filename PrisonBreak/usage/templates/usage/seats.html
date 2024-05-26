@@ -1,201 +1,185 @@
 {% load static %}
 <!DOCTYPE html>
 <html lang="kr">
-<head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Document</title>
-    <link rel="stylesheet" href="{% static 'usage/seats.css' %}" />
-</head>
-<body>
-    <div id="frame">
-        <svg width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
-            <line x1="38vw" y1="43vh" x2="88vw" y2="43vh" stroke="black" stroke-width="4" />
-            <line x1="63vw" y1="13vh" x2="63vw" y2="73vh" stroke="black" stroke-width="4" />
-            <rect x="20vw" y="0vh" width="60vw" height="1vh" fill="lightblue" stroke="black" stroke-width="1" />
-            <line x1="30vw" y1="0" x2="30vw" y2="1vh" stroke="black" stroke-width="1" />
-            <line x1="40vw" y1="0" x2="40vw" y2="1vh" stroke="black" stroke-width="1" />
-            <line x1="50vw" y1="0" x2="50vw" y2="1vh" stroke="black" stroke-width="1" />
-            <line x1="60vw" y1="0" x2="60vw" y2="1vh" stroke="black" stroke-width="1" />
-            <line x1="70vw" y1="0" x2="70vw" y2="1vh" stroke="black" stroke-width="1" />
-            <rect x="10vw" y="98.5vh" width="12vw" height="1.5vh" fill="grey" stroke="black" stroke-width="1" />
-            <text x="16vw" y="99.5vh" fill="black" font-size="1.8vh" text-anchor="middle" dominant-baseline="middle">Door</text>
-            <rect x="78vw" y="98.5vh" width="12vw" height="1.5vh" fill="grey" stroke="black" stroke-width="1" />
-            <text x="84vw" y="99.5vh" fill="black" font-size="1.8vh" text-anchor="middle" dominant-baseline="middle">Door</text>
-        </svg>
-        <div>
-            <div class="container" id="seat1-12">
-                <!-- 좌석 버튼들 -->
-                <div class="table">
-                    {% for seat in seats %}
-                    {% if seat.seat_number <= 4 %}
-                    <button id="seat{{ seat.seat_number }}" class="seat{% if seat.is_used %} used{% endif %}">
-                                {{ seat.seat_number }}
-                                <body><div>
-                            </button>
-                        {% endif %}
-                    {% endfor %}
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Document</title>
+        <link rel="stylesheet" href="{% static 'usage/seats.css' %}" />
+    </head>
+    <body>
+        <div id="status">
+            <div style="display: flex; flex-direction: row; align-items: center">
+                <button class="circle" id="using" style="margin-right: 10px"></button>
+                using:
+            </div>
+            <br />
+            <div style="display: flex; flex-direction: row; align-items: center">
+                <button class="circle" id="empty" style="margin-right: 10px"></button>
+                empty:
+            </div>
+        </div>
+
+        <div id="frame">
+            <svg width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
+                <line x1="38vw" y1="43vh" x2="88vw" y2="43vh" stroke="black" stroke-width="4" />
+                <line x1="63vw" y1="13vh" x2="63vw" y2="73vh" stroke="black" stroke-width="4" />
+                <rect x="20vw" y="0vh" width="60vw" height="1vh" fill="lightblue" stroke="black" stroke-width="1" />
+                <line x1="30vw" y1="0" x2="30vw" y2="1vh" stroke="black" stroke-width="1" />
+                <line x1="40vw" y1="0" x2="40vw" y2="1vh" stroke="black" stroke-width="1" />
+                <line x1="50vw" y1="0" x2="50vw" y2="1vh" stroke="black" stroke-width="1" />
+                <line x1="60vw" y1="0" x2="60vw" y2="1vh" stroke="black" stroke-width="1" />
+                <line x1="70vw" y1="0" x2="70vw" y2="1vh" stroke="black" stroke-width="1" />
+                <rect x="10vw" y="98.5vh" width="12vw" height="1.5vh" fill="grey" stroke="black" stroke-width="1" />
+                <text x="16vw" y="99.5vh" fill="black" font-size="1.8vh" text-anchor="middle" dominant-baseline="middle">Door</text>
+                <rect x="78vw" y="98.5vh" width="12vw" height="1.5vh" fill="grey" stroke="black" stroke-width="1" />
+                <text x="84vw" y="99.5vh" fill="black" font-size="1.8vh" text-anchor="middle" dominant-baseline="middle">Door</text>
+            </svg>
+            <div>
+                <div class="container" id="seat1-12">
+                    <!-- 좌석 버튼들 -->
+                    <div class="table">
+                        {% for seat in seats %} {% if seat.seat_number <= 4 %}
+                        <button id="seat{{ seat.seat_number }}" class="seat{% if seat.is_used %} used{% endif %}">{{ seat.seat_number }}</button>
+                        {% endif %} {% endfor %}
+                    </div>
+                    <div class="table">
+                        {% for seat in seats %} {% if seat.seat_number > 4 and seat.seat_number <= 8 %}
+                        <button id="seat{{ seat.seat_number }}" class="seat{% if seat.is_used %} used{% endif %}">{{ seat.seat_number }}</button>
+                        {% endif %} {% endfor %}
+                    </div>
+                    <div class="table">
+                        {% for seat in seats %} {% if seat.seat_number > 8 and seat.seat_number <= 12 %}
+                        <button id="seat{{ seat.seat_number }}" class="seat{% if seat.is_used %} used{% endif %}">{{ seat.seat_number }}</button>
+                        {% endif %} {% endfor %}
+                    </div>
                 </div>
-                <div class="table">
-                    {% for seat in seats %}
-                        {% if seat.seat_number > 4 and seat.seat_number <= 8 %}
-                            <button id="seat{{ seat.seat_number }}" class="seat{% if seat.is_used %} used{% endif %}">{{ seat.seat_number }}</button>
-                        {% endif %}
-                    {% endfor %}
-                </div>
-                <div class="table">
-                    {% for seat in seats %}
-                        {% if seat.seat_number > 8 and seat.seat_number <= 12 %}
-                            <button id="seat{{ seat.seat_number }}" class="seat{% if seat.is_used %} used{% endif %}">
-                                {{ seat.seat_number }}
-                            </button>
-                        {% endif %}
-                    {% endfor %}
+                <div class="container" id="seat13-24">
+                    <!-- 나머지 좌석 버튼들 -->
+                    <div class="table">
+                        {% for seat in seats %} {% if seat.seat_number > 12 and seat.seat_number <= 16 %}
+                        <button id="seat{{ seat.seat_number }}" class="seat{% if seat.is_used %} used{% endif %}">{{ seat.seat_number }}</button>
+                        {% endif %} {% endfor %}
+                    </div>
+                    <div class="table">
+                        {% for seat in seats %} {% if seat.seat_number > 16 and seat.seat_number <= 20 %}
+                        <button id="seat{{ seat.seat_number }}" class="seat{% if seat.is_used %} used{% endif %}">{{ seat.seat_number }}</button>
+                        {% endif %} {% endfor %}
+                    </div>
+                    <div class="table">
+                        {% for seat in seats %} {% if seat.seat_number > 20 and seat.seat_number <= 24 %}
+                        <button id="seat{{ seat.seat_number }}" class="seat{% if seat.is_used %} used{% endif %}">{{ seat.seat_number }}</button>
+                        {% endif %} {% endfor %}
+                    </div>
                 </div>
             </div>
-            <div class="container" id="seat13-24">
+            <div class="container" id="seat25-28">
                 <!-- 나머지 좌석 버튼들 -->
-                <div class="table">
-                    {% for seat in seats %}
-                        {% if seat.seat_number > 12 and seat.seat_number <= 16 %}
-                            <button id="seat{{ seat.seat_number }}" class="seat{% if seat.is_used %} used{% endif %}">
-                                {{ seat.seat_number }}
-                            </button>
-                        {% endif %}
-                    {% endfor %}
-                </div>
-                <div class="table">
-                    {% for seat in seats %}
-                        {% if seat.seat_number > 16 and seat.seat_number <= 20 %}
-                            <button id="seat{{ seat.seat_number }}" class="seat{% if seat.is_used %} used{% endif %}">
-                                {{ seat.seat_number }}
-                            </button>
-                        {% endif %}
-                    {% endfor %}
-                </div>
-                <div class="table">
-                    {% for seat in seats %}
-                        {% if seat.seat_number > 20 and seat.seat_number <= 24 %}
-                            <button id="seat{{ seat.seat_number }}" class="seat{% if seat.is_used %} used{% endif %}">
-                                {{ seat.seat_number }}
-                            </button>
-                        {% endif %}
-                    {% endfor %}
-                </div>
+                {% for seat in seats %} {% if seat.seat_number > 24 %}
+                <button id="seat{{ seat.seat_number }}" class="seat{% if seat.is_used %} used{% endif %}">{{ seat.seat_number }}</button>
+                {% endif %} {% endfor %}
             </div>
         </div>
-        <div class="container" id="seat25-28">
-            <!-- 나머지 좌석 버튼들 -->
-            {% for seat in seats %}
-                {% if seat.seat_number > 24 %}
-                    <button id="seat{{ seat.seat_number }}" class="seat{% if seat.is_used %} used{% endif %}">
-                        {{ seat.seat_number }}
-                    </button>
-                {% endif %}
-            {% endfor %}
+        <div id="seatModal" class="modal">
+            <div class="modal-content">
+                <span class="close" onclick="closeModal()">&times;</span>
+                <p id="modalText"></p>
+                <button id="actionButton" onclick="toggleSeatStatus()">Action</button>
+            </div>
         </div>
-    </div>
-    <div id="seatModal" class="modal">
-        <div class="modal-content">
-            <span class="close" onclick="closeModal()">&times;</span>
-            <p id="modalText"></p>
-            <button id="actionButton" onclick="toggleSeatStatus()">Action</button>
+        <!-- time 모달 추가 -->
+        <div id="timeModal" class="modal">
+            <div class="modal-content">
+                <span class="close" onclick="closeTimeModal()">&times;</span>
+                <p>Please enter the usage time(min):</p>
+                <input type="number" id="usageTime" placeholder="Time in minutes" />
+                <button onclick="enterButtonClick()">Enter</button>
+            </div>
         </div>
-    </div>
-    <!-- time 모달 추가 -->
-    <div id="timeModal" class="modal">
-        <div class="modal-content">
-            <span class="close" onclick="closeTimeModal()">&times;</span>
-            <p>Please enter the usage time(min):</p>
-            <input type="number" id="usageTime" placeholder="Time in minutes">
-            <button onclick="enterButtonClick()">Enter</button>
-        </div>
-    </div>
 
-    <script>
-        document.querySelectorAll('.seat').forEach(button => {
-            button.addEventListener('click', function() {
-                openModal(this);
+        <script>
+            document.querySelectorAll(".seat").forEach((button) => {
+                button.addEventListener("click", function () {
+                    openModal(this);
+                });
             });
-        });
 
-        let selectedSeat;
+            let selectedSeat;
 
-        function openModal(seat) {
-            selectedSeat = seat;
-            const seatNumber = seat.innerText;
-            document.getElementById('modalText').innerText = 'Seat Number: ' + seatNumber;
-            const actionButton = document.getElementById('actionButton');
-            if (seat.classList.contains('used')) {
-                actionButton.innerText = 'End';
-            } else {
-                actionButton.innerText = 'Use';
-            }
-            document.getElementById('seatModal').style.display = 'block';
-        }
-
-        function closeModal() {
-            document.getElementById('seatModal').style.display = 'none';
-        }
-
-        function openTimeModal() {
-            document.getElementById('timeModal').style.display = 'block';
-        }
-
-        function closeTimeModal() {
-            document.getElementById('timeModal').style.display = 'none';
-        }
-
-        function toggleSeatStatus() {
-            const action = selectedSeat.classList.contains('used') ? 'end' : 'use';
-            const seatNumber = selectedSeat.innerText;
-            const csrfToken = '{{ csrf_token }}';
-            const usageTime = document.getElementById('usageTime').value;
-
-            fetch('/update_seat_status/', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/x-www-form-urlencoded',
-                    'X-CSRFToken': csrfToken,
-                },
-                body: `seat_number=${seatNumber}&action=${action}`,
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.status === 'success') {
-                    if (action === 'use') {
-                        if (data.alreadyUsingSeat) {
-                            alert('You are already using a seat.');
-                        } else {
-                            // selectedSeat.classList.add('used');
-                            openTimeModal();
-                        }
-                    } else {
-                    selectedSeat.classList.remove('used');
-                    }
+            function openModal(seat) {
+                selectedSeat = seat;
+                const seatNumber = seat.innerText;
+                document.getElementById("modalText").innerText = "Seat Number: " + seatNumber;
+                const actionButton = document.getElementById("actionButton");
+                if (seat.classList.contains("used")) {
+                    actionButton.innerText = "End";
+                } else {
+                    actionButton.innerText = "Use";
                 }
-                closeModal();
-            });
-        }
-
-        window.onclick = function(event) {
-            if (event.target == document.getElementById('seatModal')) {
-                closeModal();
-                closeTimeModal();
+                document.getElementById("seatModal").style.display = "block";
             }
-        }
-        
 
-        function enterButtonClick() {
-            const usageTime = document.getElementById('usageTime').value;
-            if (usageTime) { // 사용 시간이 입력되었는지 확인
-                toggleSeatStatus();
-                selectedSeat.classList.add('used');
-            } else {
-                alert("Please enter the usage time.");
+            function closeModal() {
+                document.getElementById("seatModal").style.display = "none";
             }
-                    
-        }
-    </script>
-</body>
+
+            function openTimeModal() {
+                document.getElementById("timeModal").style.display = "block";
+            }
+
+            function closeTimeModal() {
+                document.getElementById("timeModal").style.display = "none";
+            }
+
+            function toggleSeatStatus() {
+                const action = selectedSeat.classList.contains("used") ? "end" : "use";
+                const seatNumber = selectedSeat.innerText;
+                const csrfToken = "{{ csrf_token }}";
+                const usageTime = document.getElementById("usageTime").value;
+
+                fetch("/update_seat_status/", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/x-www-form-urlencoded",
+                        "X-CSRFToken": csrfToken,
+                    },
+                    body: `seat_number=${seatNumber}&action=${action}`,
+                })
+                    .then((response) => response.json())
+                    .then((data) => {
+                        if (data.status === "success") {
+                            if (action === "use") {
+                                if (data.alreadyUsingSeat) {
+                                    alert("You are already using a seat.");
+                                } else {
+                                    // selectedSeat.classList.add('used');
+                                    openTimeModal();
+                                }
+                            } else {
+                                selectedSeat.classList.remove("used");
+                            }
+                        }
+                        closeModal();
+                    });
+            }
+
+            window.onclick = function (event) {
+                if (event.target == document.getElementById("seatModal")) {
+                    closeModal();
+                    closeTimeModal();
+                }
+            };
+
+            function enterButtonClick() {
+                const usageTime = document.getElementById("usageTime").value;
+                if (usageTime) {
+                    // 사용 시간이 입력되었는지 확인
+                    toggleSeatStatus();
+                    selectedSeat.classList.add("used");
+                } else {
+                    alert("Please enter the usage time.");
+                }
+            }
+        </script>
+    </body>
 </html>

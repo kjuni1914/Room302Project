@@ -73,4 +73,24 @@ svg{
     position: absolute;
     z-index: -1;
 }
+#status{
+    position: absolute;
+    top: 5vh;
+    left: 2vw;
+}
+
+.circle{
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+}
+
+#status #using{
+    background-color: deeppink;
+}
+
+#status #empty{
+    background-color: blue;
+}
+
 
