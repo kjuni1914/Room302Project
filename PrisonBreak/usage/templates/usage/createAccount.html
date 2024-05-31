@@ -46,7 +46,7 @@
                 <input type="text" id="security-answer" name="security_answer" required>
             </div>
             <div class="button-group">
-                <button type="button" class="back" onclick="history.back()">Back</button>
+                <button type="button" class="back" onclick="window.location.href='{% url 'user_login' %}'">Back</button>
                 <button type="submit" class="create">Create</button>
             </div>
         </form>
