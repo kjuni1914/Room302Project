@@ -23,7 +23,14 @@ def update_seat_status(request):
         action = request.POST.get("action")
         usage_time = request.POST.get("usage_time", 0)
 
+        if action == "use" and Seat.objects.filter(user=request.user, is_used=True).exists():
+            return JsonResponse({"status": "error", "message": "You already have a reserved seat."})
+
         seat = Seat.objects.get(seat_number=seat_number)
+
+        if action == "end" and seat.user != request.user:
+            return JsonResponse({"status": "error", "message": "You cannot cancel a reservation that is not yours."})
+
         if action == "use":
             seat.is_used = True
             seat.user = request.user
@@ -45,6 +52,7 @@ def update_seat_status(request):
             "is_used": seat.is_used,
             "user_seat_number": user_seat_number
         })
+
     
 def index(request):
     return render(request, 'usage/login.html')
