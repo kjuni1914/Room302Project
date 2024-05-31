@@ -6,37 +6,46 @@ from django.http import HttpResponse, JsonResponse
 from .models import Seat
 
 def seat(request):
+    user = request.user
+    user_seat = None
+    if user.is_authenticated:
+        user_seat = Seat.objects.filter(user=user).first()
+
     seats = Seat.objects.all()
-    return render(request, 'usage/seats.html', {'seats': seats})
+    return render(request, 'usage/seats.html', {
+        'seats': seats,
+        'user_seat_number': user_seat.seat_number if user_seat else None
+    })
 
 def update_seat_status(request):
-    if request.method == 'POST':
-        seat_number = request.POST.get('seat_number')
-        action = request.POST.get('action')
+    if request.method == "POST":
+        seat_number = request.POST.get("seat_number")
+        action = request.POST.get("action")
+        usage_time = request.POST.get("usage_time", 0)
+
         seat = Seat.objects.get(seat_number=seat_number)
-        user = request.user
-        
-         # 사용자가 'use' 액션을 요청하고 이미 다른 좌석을 사용 중인 경우
-        if action == 'use' and Seat.objects.filter(user=user, is_used=True).exists():
-            return JsonResponse({'status': 'failure', 'message': 'User is already using another seat.'})
-
-        if action == 'use':
-            # 좌석을 사용하도록 설정하고 사용자를 할당
+        if action == "use":
             seat.is_used = True
-            seat.user = user
-        elif action == 'end':
-            # 좌석 사용을 종료하고, 좌석을 사용 중인 사용자가 현재 요청을 보낸 사용자인지 확인
-            if seat.user == user:
-                seat.is_used = False
-                seat.user = None  # 좌석 사용자 정보를 제거
-            else:
-                # 현재 사용자가 이 좌석을 사용 안하고 있으면
-                return JsonResponse({'status': 'failure', 'message': 'This seat is not used by the current user.'})
-
+            seat.user = request.user
+            seat.usage_time = usage_time
+        else:
+            seat.is_used = False
+            seat.user = None
+            seat.usage_time = 0
         seat.save()
-        return JsonResponse({'status': 'success'})
-    return JsonResponse({'status': 'failure'})
 
+        user_seat_number = None
+        if request.user.is_authenticated:
+            user_seat = Seat.objects.filter(user=request.user).first()
+            user_seat_number = user_seat.seat_number if user_seat else None
+
+        return JsonResponse({
+            "status": "success",
+            "seat_number": seat_number,
+            "is_used": seat.is_used,
+            "user_seat_number": user_seat_number
+        })
+    
 def index(request):
     return render(request, 'usage/login.html')
 

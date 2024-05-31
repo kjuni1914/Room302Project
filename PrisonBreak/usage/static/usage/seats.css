@@ -70,20 +70,23 @@ body {
 
 /* seat color */
 .empty {
-    background-color: blue;
+    background-color: white;
 }
 
 .used {
-    background-color: deeppink;
+    background-color: pink;
+}
+.current-user {
+    background-color: yellow !important;
 }
 
 /* status color */
 #status #used {
-    background-color: deeppink;
+    background-color: pink;
 }
 
 #status #empty {
-    background-color: blue;
+    background-color: white;
 }
 
 /* background position */

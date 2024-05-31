@@ -46,41 +46,41 @@
                 <div class="container" id="seat1-12">
                     <div class="table">
                         {% for seat in seats %} {% if seat.seat_number <= 4 %}
-                        <button id="seat{{ seat.seat_number }}" class="seat {% if seat.is_used %}used{% else %}empty{% endif %}">{{ seat.seat_number }}</button>
+                        <button id="seat{{ seat.seat_number }}" class="seat {% if seat.is_used %}used{% else %}empty{% endif %} {% if seat.seat_number == user_seat_number %}current-user{% endif %}">{{ seat.seat_number }}</button>
                         {% endif %} {% endfor %}
                     </div>
                     <div class="table">
                         {% for seat in seats %} {% if seat.seat_number > 4 and seat.seat_number <= 8 %}
-                        <button id="seat{{ seat.seat_number }}" class="seat {% if seat.is_used %}used{% else %}empty{% endif %}">{{ seat.seat_number }}</button>
+                        <button id="seat{{ seat.seat_number }}" class="seat {% if seat.is_used %}used{% else %}empty{% endif %} {% if seat.seat_number == user_seat_number %}current-user{% endif %}">{{ seat.seat_number }}</button>
                         {% endif %} {% endfor %}
                     </div>
                     <div class="table">
                         {% for seat in seats %} {% if seat.seat_number > 8 and seat.seat_number <= 12 %}
-                        <button id="seat{{ seat.seat_number }}" class="seat {% if seat.is_used %}used{% else %}empty{% endif %}">{{ seat.seat_number }}</button>
+                        <button id="seat{{ seat.seat_number }}" class="seat {% if seat.is_used %}used{% else %}empty{% endif %} {% if seat.seat_number == user_seat_number %}current-user{% endif %}">{{ seat.seat_number }}</button>
                         {% endif %} {% endfor %}
                     </div>
                 </div>
                 <div class="container" id="seat13-24">
                     <div class="table">
                         {% for seat in seats %} {% if seat.seat_number > 12 and seat.seat_number <= 16 %}
-                        <button id="seat{{ seat.seat_number }}" class="seat {% if seat.is_used %}used{% else %}empty{% endif %}">{{ seat.seat_number }}</button>
+                        <button id="seat{{ seat.seat_number }}" class="seat {% if seat.is_used %}used{% else %}empty{% endif %} {% if seat.seat_number == user_seat_number %}current-user{% endif %}">{{ seat.seat_number }}</button>
                         {% endif %} {% endfor %}
                     </div>
                     <div class="table">
                         {% for seat in seats %} {% if seat.seat_number > 16 and seat.seat_number <= 20 %}
-                        <button id="seat{{ seat.seat_number }}" class="seat {% if seat.is_used %}used{% else %}empty{% endif %}">{{ seat.seat_number }}</button>
+                        <button id="seat{{ seat.seat_number }}" class="seat {% if seat.is_used %}used{% else %}empty{% endif %} {% if seat.seat_number == user_seat_number %}current-user{% endif %}">{{ seat.seat_number }}</button>
                         {% endif %} {% endfor %}
                     </div>
                     <div class="table">
                         {% for seat in seats %} {% if seat.seat_number > 20 and seat.seat_number <= 24 %}
-                        <button id="seat{{ seat.seat_number }}" class="seat {% if seat.is_used %}used{% else %}empty{% endif %}">{{ seat.seat_number }}</button>
+                        <button id="seat{{ seat.seat_number }}" class="seat {% if seat.is_used %}used{% else %}empty{% endif %} {% if seat.seat_number == user_seat_number %}current-user{% endif %}">{{ seat.seat_number }}</button>
                         {% endif %} {% endfor %}
                     </div>
                 </div>
             </div>
             <div class="container" id="seat25-28">
                 {% for seat in seats %} {% if seat.seat_number > 24 %}
-                <button id="seat{{ seat.seat_number }}" class="seat {% if seat.is_used %}used{% else %}empty{% endif %}">{{ seat.seat_number }}</button>
+                <button id="seat{{ seat.seat_number }}" class="seat {% if seat.is_used %}used{% else %}empty{% endif %} {% if seat.seat_number == user_seat_number %}current-user{% endif %}">{{ seat.seat_number }}</button>
                 {% endif %} {% endfor %}
             </div>
         </div>
@@ -100,7 +100,6 @@
                 <button onclick="enterButtonClick()">Enter</button>
             </div>
         </div>
-
         <script>
             document.querySelectorAll(".seat").forEach((button) => {
                 button.addEventListener("click", function () {
@@ -135,20 +134,18 @@
                 document.getElementById("timeModal").style.display = "none";
             }
 
-            function setSeatColor(seat) {
-                if (seat.classList.contains("used")) {
-                    seat.style.backgroundColor = document.getElementById("used").style.backgroundColor;
-                } else {
-                    seat.style.backgroundColor = document.getElementById("empty").style.backgroundColor;
+            function setSeatColor(seat, isUsed, userSeatNumber) {
+                seat.classList.remove("used", "empty", "current-user");
+                seat.classList.add(isUsed ? "used" : "empty");
+                if (seat.innerText == userSeatNumber) {
+                    seat.classList.add("current-user");
                 }
             }
 
             function toggleSeatStatus() {
                 if (selectedSeat.classList.contains("used")) {
-                    // 좌석 사용 종료
                     updateSeatStatus("end");
                 } else {
-                    // 좌석 사용 시작
                     closeModal();
                     openTimeModal();
                 }
@@ -158,6 +155,14 @@
                 const seatNumber = selectedSeat.innerText;
                 const csrfToken = "{{ csrf_token }}";
                 const usageTime = document.getElementById("usageTime").value;
+
+                if (action === "use") {
+                    selectedSeat.classList.remove("empty");
+                    selectedSeat.classList.add("used");
+                } else {
+                    selectedSeat.classList.remove("used");
+                    selectedSeat.classList.add("empty");
+                }
 
                 fetch("/update_seat_status/", {
                     method: "POST",
@@ -170,16 +175,17 @@
                     .then((response) => response.json())
                     .then((data) => {
                         if (data.status === "success") {
+                            setSeatColor(selectedSeat, data.is_used, data.user_seat_number);
+                        } else {
                             if (action === "use") {
-                                selectedSeat.classList.remove("empty");
-                                selectedSeat.classList.add("used");
-                            } else {
                                 selectedSeat.classList.remove("used");
                                 selectedSeat.classList.add("empty");
-                                closeModal();
+                            } else {
+                                selectedSeat.classList.remove("empty");
+                                selectedSeat.classList.add("used");
                             }
-                            setSeatColor(selectedSeat);
                         }
+                        closeModal();
                         closeTimeModal();
                     });
             }
@@ -229,6 +235,7 @@
 
                 document.getElementById("colorModal").style.display = "none";
             };
+
             function complementColor(btncolor) {
                 const color = parseInt(btncolor.slice(1), 16);
                 const complement = 0xffffff ^ color;
