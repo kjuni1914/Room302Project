@@ -139,3 +139,15 @@ def change_password(request):
     else:
         # GET 요청인 경우, 폼을 다시 렌더링
         return render(request, 'usage/changePassword.html')
+    
+def get_seat_info(request):
+    if request.method == 'GET':
+        seats = Seat.objects.all()
+        seat_data = [
+            {'seat_number': seat.seat_number, 'is_used': seat.is_used, 'user': seat.user.username if seat.user else None}
+            for seat in seats
+        ]
+        user_seat = Seat.objects.filter(user=request.user, is_used=True).first()
+        user_seat_number = user_seat.seat_number if user_seat else None
+        return JsonResponse({'status': 'success', 'seats': seat_data, 'user_seat': user_seat_number})
+    return JsonResponse({'status': 'failure'})

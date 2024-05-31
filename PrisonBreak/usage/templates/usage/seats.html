@@ -103,11 +103,33 @@
             </div>
         </div>
         <script>
-            document.querySelectorAll(".seat").forEach((button) => {
-                button.addEventListener("click", function () {
-                    openModal(this);
-                });
+            document.addEventListener("DOMContentLoaded", function() {
+                fetchSeatInfo();
             });
+
+            let userSeat = null;
+
+            function fetchSeatInfo() {
+                fetch("/get_seat_info/")
+                    .then((response) => response.json())
+                    .then((data) => {
+                        if (data.status === "success") {
+                            userSeat = data.user_seat;
+                            data.seats.forEach(seat => {
+                                const seatButton = document.getElementById(`seat${seat.seat_number}`);
+                                if (seatButton) {
+                                    seatButton.classList.remove("used", "empty", "current-user");
+                                    seatButton.classList.add(seat.is_used ? "used" : "empty");
+                                    if (seat.seat_number === userSeat) {
+                                        seatButton.classList.add("current-user");
+                                    }
+                                    seatButton.dataset.user = seat.user;
+                                }
+                            });
+                        }
+                    });
+            }
+
             function logout() {
                 window.location.href = "/";
             }
@@ -123,13 +145,18 @@
             function openModal(seat) {
                 selectedSeat = seat;
                 const seatNumber = seat.innerText;
-                document.getElementById("modalText").innerText = "Seat Number: " + seatNumber;
+                const seatUser = seat.dataset.user;
                 const actionButton = document.getElementById("actionButton");
-                if (seat.classList.contains("used")) {
-                    actionButton.innerText = "End";
+                document.getElementById("modalText").innerText = "Seat Number: " + seatNumber;
+                
+                if (seat.classList.contains("used") && seatUser !== "{{ user.username }}") {
+                    actionButton.style.display = "none";
+                    document.getElementById("modalText").innerText += `\nUsed by: ${seatUser}`;
                 } else {
-                    actionButton.innerText = "Use";
+                    actionButton.style.display = "block";
+                    actionButton.innerText = seat.classList.contains("used") ? "End" : "Use";
                 }
+                
                 document.getElementById("seatModal").style.display = "block";
             }
 
@@ -167,14 +194,6 @@
                 const csrfToken = "{{ csrf_token }}";
                 const usageTime = document.getElementById("usageTime").value;
 
-                if (action === "use") {
-                    selectedSeat.classList.remove("empty");
-                    selectedSeat.classList.add("used");
-                } else {
-                    selectedSeat.classList.remove("used");
-                    selectedSeat.classList.add("empty");
-                }
-
                 fetch("/update_seat_status/", {
                     method: "POST",
                     headers: {
@@ -187,14 +206,7 @@
                     .then((data) => {
                         if (data.status === "success") {
                             setSeatColor(selectedSeat, data.is_used, data.user_seat_number);
-                        } else {
-                            if (action === "use") {
-                                selectedSeat.classList.remove("used");
-                                selectedSeat.classList.add("empty");
-                            } else {
-                                selectedSeat.classList.remove("empty");
-                                selectedSeat.classList.add("used");
-                            }
+                            userSeat = data.user_seat_number; // 업데이트된 좌석 정보 반영
                         }
                         closeModal();
                         closeTimeModal();
