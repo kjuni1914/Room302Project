@@ -8,6 +8,8 @@
         <link rel="stylesheet" href="{% static 'usage/seats.css' %}" />
     </head>
     <body>
+        <button class="logout-button" onclick="logout()">logout</button>
+
         <div id="status">
             <div style="display: flex; flex-direction: row; align-items: center">
                 <button class="circle" id="used" style="margin-right: 10px" onclick="openColorModal('used')"></button>
@@ -101,6 +103,15 @@
             </div>
         </div>
         <script>
+            document.querySelectorAll(".seat").forEach((button) => {
+                button.addEventListener("click", function () {
+                    openModal(this);
+                });
+            });
+            function logout() {
+                window.location.href = "/";
+            }
+
             document.querySelectorAll(".seat").forEach((button) => {
                 button.addEventListener("click", function () {
                     openModal(this);

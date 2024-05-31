@@ -4,7 +4,9 @@ from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login
 from django.http import HttpResponse, JsonResponse
 from .models import Seat
+from django.contrib.auth.decorators import login_required
 
+@login_required(login_url='')
 def seat(request):
     user = request.user
     user_seat = None
@@ -24,12 +26,12 @@ def update_seat_status(request):
         usage_time = request.POST.get("usage_time", 0)
 
         if action == "use" and Seat.objects.filter(user=request.user, is_used=True).exists():
-            return JsonResponse({"status": "error", "message": "You already have a reserved seat."})
+            return JsonResponse({"status": "error", "message": "You are already using another seat."})
 
         seat = Seat.objects.get(seat_number=seat_number)
 
         if action == "end" and seat.user != request.user:
-            return JsonResponse({"status": "error", "message": "You cannot cancel a reservation that is not yours."})
+            return JsonResponse({"status": "error", "message": "This seat is not your seat."})
 
         if action == "use":
             seat.is_used = True

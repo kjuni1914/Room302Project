@@ -1,6 +1,22 @@
 body {
     margin: 0px;
 }
+.logout-button {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    padding: 10px 20px;
+    background-color: #f44336;
+    color: white;
+    border: none;
+    cursor: pointer;
+    border-radius: 5px;
+}
+
+.logout-button:hover {
+    background-color: #d32f2f;
+}
+
 .seat {
     width: 10vw;
     /* 1 늘리고 #seat1-24 gap 2 줄이면 됨 */
@@ -77,7 +93,7 @@ body {
     background-color: pink;
 }
 .current-user {
-    background-color: yellow !important;
+    background-color: yellow;
 }
 
 /* status color */
