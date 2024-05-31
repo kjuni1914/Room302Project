@@ -3,24 +3,25 @@ body {
 }
 #logout {
     position: absolute;
-    top: 10px;
-    right: 10px;
+    top: 2vh;
+    right: 2vw;
     padding: 10px 20px;
     background-color: #bbbbbb;
     color: white;
     border: none;
-    cursor: pointer;
     border-radius: 5px;
 }
 
 button {
-    transition: transform 0.2s ease;
+    transition: transform 0.2s ease, font-size 0.2s ease, filter 0.2s ease-in;
+    cursor: pointer;
 }
 
 button:hover {
     filter: brightness(0.9);
     transform: scale(1.04);
     z-index: 1;
+    font-size: 15px;
 }
 
 .seat {
