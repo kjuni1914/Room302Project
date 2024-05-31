@@ -106,6 +106,39 @@ def create_account(request):
     else:
         return render(request, 'usage/createAccount.html')
     
+# def change_password(request):
+#     if request.method == "POST":
+#         # 사용자 입력 데이터 가져오기
+#         user_id = request.POST.get('id')
+#         security_question = request.POST.get('security-question')
+#         security_answer = request.POST.get('security-answer')
+#         new_password = request.POST.get('new_password')
+#         reenter_password = request.POST.get('reenter_password')
+        
+#         # 새로운 비밀번호와 재입력한 비밀번호 일치 여부 확인
+#         if new_password != reenter_password:
+#             return HttpResponse('재입력한 비밀번호가 일치하지 않습니다.')
+        
+#         # 해당 데이터와 일치하는 사용자 조회
+#         try:
+#             user_profile = UserProfile.objects.get(
+#                 user__username=user_id, 
+#                 security_question=security_question, 
+#                 security_answer=security_answer
+#             )
+            
+#             # 사용자의 비밀번호 업데이트
+#             user = user_profile.user
+#             user.set_password(new_password)
+#             user.save()
+            
+#             return HttpResponse('비밀번호가 성공적으로 변경되었습니다.')
+#         except UserProfile.DoesNotExist:
+#             # 일치하는 사용자가 없는 경우
+#             return HttpResponse('일치하는 사용자 정보가 없습니다.')
+#     else:
+#         # GET 요청인 경우, 폼을 다시 렌더링
+#         return render(request, 'usage/changePassword.html')
 def change_password(request):
     if request.method == "POST":
         # 사용자 입력 데이터 가져오기
@@ -117,7 +150,7 @@ def change_password(request):
         
         # 새로운 비밀번호와 재입력한 비밀번호 일치 여부 확인
         if new_password != reenter_password:
-            return HttpResponse('재입력한 비밀번호가 일치하지 않습니다.')
+            return render(request, 'usage/changePassword.html', {'message': '재입력한 비밀번호가 일치하지 않습니다.'})
         
         # 해당 데이터와 일치하는 사용자 조회
         try:
@@ -132,13 +165,14 @@ def change_password(request):
             user.set_password(new_password)
             user.save()
             
-            return HttpResponse('비밀번호가 성공적으로 변경되었습니다.')
+            return render(request, 'usage/changePassword.html', {'message': '비밀번호가 성공적으로 변경되었습니다.'})
         except UserProfile.DoesNotExist:
             # 일치하는 사용자가 없는 경우
-            return HttpResponse('일치하는 사용자 정보가 없습니다.')
+            return render(request, 'usage/changePassword.html', {'message': '일치하는 사용자 정보가 없습니다.'})
     else:
         # GET 요청인 경우, 폼을 다시 렌더링
         return render(request, 'usage/changePassword.html')
+
     
 def get_seat_info(request):
     if request.method == 'GET':
