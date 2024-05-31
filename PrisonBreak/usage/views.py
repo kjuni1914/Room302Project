@@ -121,7 +121,7 @@ def change_password(request):
         
         # 새로운 비밀번호와 재입력한 비밀번호 일치 여부 확인
         if new_password != reenter_password:
-            return render(request, 'usage/changePassword.html', {'message': '재입력한 비밀번호가 일치하지 않습니다.'})
+            return render(request, 'usage/changePassword.html', {'message': 'Re-entered Passwords do not match'})
         
         # 해당 데이터와 일치하는 사용자 조회
         try:
@@ -140,7 +140,7 @@ def change_password(request):
             return redirect('user_login')
         except UserProfile.DoesNotExist:
             # 일치하는 사용자가 없는 경우
-            return render(request, 'usage/changePassword.html', {'message': '일치하는 사용자 정보가 없습니다.'})
+            return render(request, 'usage/changePassword.html', {'message': 'No matching user information found.'})
     else:
         # GET 요청인 경우, 폼을 다시 렌더링
         return render(request, 'usage/changePassword.html')
