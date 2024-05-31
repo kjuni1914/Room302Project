@@ -19,9 +19,14 @@ button {
 
 button:hover {
     filter: brightness(0.9);
-    transform: scale(1.04);
     z-index: 1;
+    transform: scale(1.04);
     font-size: 15px;
+}
+
+.modal button {
+    transform: scale(1);
+    font-size: 13px;
 }
 
 .seat {
