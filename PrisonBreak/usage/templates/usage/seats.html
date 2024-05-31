@@ -207,6 +207,7 @@
                         if (data.status === "success") {
                             setSeatColor(selectedSeat, data.is_used, data.user_seat_number);
                             userSeat = data.user_seat_number; // 업데이트된 좌석 정보 반영
+                            fetchSeatInfo();
                         }
                         closeModal();
                         closeTimeModal();
