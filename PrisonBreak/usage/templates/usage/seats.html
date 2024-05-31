@@ -8,7 +8,7 @@
         <link rel="stylesheet" href="{% static 'usage/seats.css' %}" />
     </head>
     <body>
-        <button class="logout-button" onclick="logout()">logout</button>
+        <button id="logout" onclick="logout()">logout</button>
 
         <div id="status">
             <div style="display: flex; flex-direction: row; align-items: center">
@@ -103,7 +103,7 @@
             </div>
         </div>
         <script>
-            document.addEventListener("DOMContentLoaded", function() {
+            document.addEventListener("DOMContentLoaded", function () {
                 fetchSeatInfo();
             });
 
@@ -115,7 +115,7 @@
                     .then((data) => {
                         if (data.status === "success") {
                             userSeat = data.user_seat;
-                            data.seats.forEach(seat => {
+                            data.seats.forEach((seat) => {
                                 const seatButton = document.getElementById(`seat${seat.seat_number}`);
                                 if (seatButton) {
                                     seatButton.classList.remove("used", "empty", "current-user");
@@ -148,7 +148,7 @@
                 const seatUser = seat.dataset.user;
                 const actionButton = document.getElementById("actionButton");
                 document.getElementById("modalText").innerText = "Seat Number: " + seatNumber;
-                
+
                 if (seat.classList.contains("used") && seatUser !== "{{ user.username }}") {
                     actionButton.style.display = "none";
                     document.getElementById("modalText").innerText += `\nUsed by: ${seatUser}`;
@@ -156,7 +156,7 @@
                     actionButton.style.display = "block";
                     actionButton.innerText = seat.classList.contains("used") ? "End" : "Use";
                 }
-                
+
                 document.getElementById("seatModal").style.display = "block";
             }
 
