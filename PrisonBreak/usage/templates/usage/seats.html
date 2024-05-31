@@ -229,8 +229,10 @@
 
                 const seatButtons = document.querySelectorAll(`.seat.${colorBtn}`);
                 seatButtons.forEach((button) => {
-                    button.style.backgroundColor = color;
-                    button.style.color = complementColor(color);
+                    if (!button.classList.contains("current-user")) {
+                        button.style.backgroundColor = color;
+                        button.style.color = complementColor(color);
+                    }
                 });
 
                 document.getElementById("colorModal").style.display = "none";
