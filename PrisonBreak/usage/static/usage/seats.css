@@ -136,3 +136,11 @@ svg {
     border-radius: 50%;
     border: 1px solid #000;
 }
+
+#empty:hover {
+    filter: none;
+    z-index: auto;
+    transform: none;
+    font-size: inherit;
+    cursor: initial;
+}

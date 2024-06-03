@@ -11,14 +11,13 @@
         <button id="logout" onclick="logout()">logout</button>
 
         <div id="status">
-            <div style="display: flex; flex-direction: row; align-items: center">
-                <button class="circle" id="used" style="margin-right: 10px" onclick="openColorModal('used')"></button>
-                using:
+            <div style="display: flex; flex-direction: row; align-items: center; margin-bottom: 5px">
+                <button class="circle" id="empty" style="margin-right: 10px; margin-bottom: 0px" disabled></button>
+                <h4 id="emptyInfo" style="margin-right: 10px; margin-bottom: 0px; margin-top: 0px"></h4>
             </div>
-            <br />
-            <div style="display: flex; flex-direction: row; align-items: center">
-                <button class="circle" id="empty" style="margin-right: 10px" onclick="openColorModal('empty')"></button>
-                empty:
+            <div style="display: flex; flex-direction: row; align-items: center; margin-bottom: 5px">
+                <button class="circle" id="used" style="margin-right: 10px; margin-bottom: 0px" onclick="openColorModal('used')"></button>
+                <h4 id="usedInfo" style="margin-right: 10px; margin-bottom: 0px; margin-top: 0px"></h4>
             </div>
             <div id="colorModal" class="modal">
                 <div class="modal-content">
@@ -109,7 +108,12 @@
 
             let userSeat = null;
 
+            let emptySeat = 0;
+            let usedSeat = 0;
+
             function fetchSeatInfo() {
+                emptySeat = 0;
+                usedSeat = 0;
                 fetch("/get_seat_info/")
                     .then((response) => response.json())
                     .then((data) => {
@@ -123,11 +127,28 @@
                                     if (seat.seat_number === userSeat) {
                                         seatButton.classList.add("current-user");
                                     }
+                                    if (seat.is_used) {
+                                        usedSeat++;
+                                    } else {
+                                        emptySeat++;
+                                    }
                                     seatButton.dataset.user = seat.user;
                                 }
                             });
+                            console.log(usedSeat);
+                            console.log(emptySeat);
+                            emptyInfo();
+                            usedInfo();
                         }
                     });
+            }
+
+            function emptyInfo() {
+                document.querySelector("#emptyInfo").innerHTML = `empty: ${emptySeat}`;
+            }
+
+            function usedInfo() {
+                document.querySelector("#usedInfo").innerHTML = `using: ${usedSeat}`;
             }
 
             function logout() {
