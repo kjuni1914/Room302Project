@@ -23,6 +23,6 @@ class UserProfile(models.Model):
         return self.user.username
     
 class Seat(models.Model):
-    user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True)
-    seat_number = models.IntegerField(unique=True)
+    seat_number = models.PositiveIntegerField(unique=True)
     is_used = models.BooleanField(default=False)
+    user = models.ForeignKey(User, null=True, blank=True, on_delete=models.SET_NULL)

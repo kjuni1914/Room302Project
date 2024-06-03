@@ -69,13 +69,11 @@ def user_login(request):
         except User.DoesNotExist:
             return render(request, 'usage/login.html', {'error': 'ID not found'})
 
-        # 사용자 인증
         user = authenticate(request, username=username, password=password)
         if user is not None:
             login(request, user)
             return redirect('/seat')
         else:
-            # 비밀번호가 일치하지 않을 때
             return render(request, 'usage/login.html', {'error': 'Incorrect password'})
     else:
         return render(request, 'usage/login.html')
@@ -89,15 +87,12 @@ def create_account(request):
         security_question = request.POST['security_question']
         security_answer = request.POST['security_answer']
         
-        # 비밀번호 재확인 검사
         if password != reenter_password:
             return render(request, 'usage/createAccount.html', {'error': 'Passwords do not match'})
         
-        # 새로운 사용자 생성
         if not User.objects.filter(username=username).exists():
             user = User.objects.create_user(username=username, password=password)
             user.save()
-            # User 객체와 함께 UserProfile 객체도 생성합니다.
             user_profile = UserProfile(user=user, security_question=security_question, security_answer=security_answer)
             user_profile.save()
             return redirect('/')
@@ -106,24 +101,18 @@ def create_account(request):
     else:
         return render(request, 'usage/createAccount.html')
     
-# def change_password(request):
-from django.shortcuts import render, redirect
-from .models import UserProfile  # Ensure this import matches your actual model
 
 def change_password(request):
     if request.method == "POST":
-        # 사용자 입력 데이터 가져오기
         user_id = request.POST.get('id')
         security_question = request.POST.get('security-question')
         security_answer = request.POST.get('security-answer')
         new_password = request.POST.get('new_password')
         reenter_password = request.POST.get('reenter_password')
         
-        # 새로운 비밀번호와 재입력한 비밀번호 일치 여부 확인
         if new_password != reenter_password:
             return render(request, 'usage/changePassword.html', {'message': 'Re-entered Passwords do not match'})
         
-        # 해당 데이터와 일치하는 사용자 조회
         try:
             user_profile = UserProfile.objects.get(
                 user__username=user_id, 
@@ -131,22 +120,17 @@ def change_password(request):
                 security_answer=security_answer
             )
             
-            # 사용자의 비밀번호 업데이트
             user = user_profile.user
             user.set_password(new_password)
             user.save()
             
-            # 비밀번호 변경 성공 시 login.html로 리디렉션
             return redirect('user_login')
         except UserProfile.DoesNotExist:
-            # 일치하는 사용자가 없는 경우
             return render(request, 'usage/changePassword.html', {'message': 'No matching user information found.'})
     else:
-        # GET 요청인 경우, 폼을 다시 렌더링
         return render(request, 'usage/changePassword.html')
 
 
-    
 def get_seat_info(request):
     if request.method == 'GET':
         seats = Seat.objects.all()
@@ -158,3 +142,27 @@ def get_seat_info(request):
         user_seat_number = user_seat.seat_number if user_seat else None
         return JsonResponse({'status': 'success', 'seats': seat_data, 'user_seat': user_seat_number})
     return JsonResponse({'status': 'failure'})
+
+@login_required
+def change_seat(request):
+    if request.method == 'POST':
+        user = request.user
+        new_seat_number = request.POST.get('new_seat_number')
+        
+        try:
+            new_seat = Seat.objects.get(seat_number=new_seat_number)
+            if new_seat.is_used:
+                return JsonResponse({'status': 'error', 'message': 'Seat already in use'})
+            
+            old_seat = Seat.objects.get(user=user)
+            old_seat.is_used = False
+            old_seat.user = None
+            old_seat.save()
+
+            new_seat.is_used = True
+            new_seat.user = user
+            new_seat.save()
+            return JsonResponse({'status': 'success'})
+        except Seat.DoesNotExist:
+            return JsonResponse({'status': 'error', 'message': 'Seat does not exist'})
+    return JsonResponse({'status': 'error', 'message': 'Invalid request'})
