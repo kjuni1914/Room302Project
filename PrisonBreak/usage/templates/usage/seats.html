@@ -230,11 +230,11 @@
                 const expectedDuration = seat.dataset.expectedDuration;
                 const endTime = convertToKRT(new Date(startTimeTemp.getTime() + expectedDuration * 60000));
                 const actionButton = document.getElementById("actionButton");
-                document.getElementById("modalText").innerText = `Seat Number: ${seatNumber}`;
+                document.getElementById("modalText").innerHTML = `<b>Seat Number :</b> ${seatNumber}`;
 
                 if (seat.classList.contains("used") && seatUser !== "{{ user.username }}") {
                     actionButton.style.display = "none";
-                    document.getElementById("modalText").innerText += `\nUsed by: ${seatUser}\nStart Time: ${startTime}\nEnd Time: ${endTime}`;
+                    document.getElementById("modalText").innerHTML += `<br><b>Used by :</b> ${seatUser}<br><b>Start Time :</b> ${startTime}<br><b>End Time :</b> ${endTime}`;
                 } else {
                     actionButton.style.display = "block";
                     if (seat.classList.contains("used")) {
