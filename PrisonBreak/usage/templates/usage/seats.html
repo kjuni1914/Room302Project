@@ -135,8 +135,6 @@
                                     seatButton.dataset.user = seat.user;
                                 }
                             });
-                            console.log(usedSeat);
-                            console.log(emptySeat);
                             emptyInfo();
                             usedInfo();
                         }
@@ -175,7 +173,11 @@
                     document.getElementById("modalText").innerText += `\nUsed by: ${seatUser}`;
                 } else {
                     actionButton.style.display = "block";
-                    actionButton.innerText = seat.classList.contains("used") ? "End" : "Use";
+                    if (seat.classList.contains("used")) {
+                        actionButton.innerText = "End";
+                    } else {
+                        actionButton.innerText = userSeat ? "Change" : "Use";
+                    }
                 }
 
                 document.getElementById("seatModal").style.display = "block";
@@ -204,6 +206,8 @@
             function toggleSeatStatus() {
                 if (selectedSeat.classList.contains("used")) {
                     updateSeatStatus("end");
+                } else if (userSeat) {
+                    changeSeat();
                 } else {
                     closeModal();
                     openTimeModal();
@@ -232,6 +236,27 @@
                         }
                         closeModal();
                         closeTimeModal();
+                    });
+            }
+
+            function changeSeat() {
+                const newSeatNumber = selectedSeat.innerText;
+                const csrfToken = "{{ csrf_token }}";
+
+                fetch("/change_seat/", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/x-www-form-urlencoded",
+                        "X-CSRFToken": csrfToken,
+                    },
+                    body: `new_seat_number=${newSeatNumber}`,
+                })
+                    .then((response) => response.json())
+                    .then((data) => {
+                        if (data.status === "success") {
+                            fetchSeatInfo();
+                        }
+                        closeModal();
                     });
             }
 
