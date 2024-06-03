@@ -21,9 +21,9 @@
             </div>
             <div id="colorModal" class="modal">
                 <div class="modal-content">
-                    <p>색을 선택하세요:</p>
+                    <p>select color:</p>
                     <input type="color" id="colorPicker" />
-                    <button id="applyColor">적용</button>
+                    <button id="applyColor">change</button>
                 </div>
             </div>
         </div>
@@ -149,7 +149,7 @@
                 const day = String(krtTime.getDate()).padStart(2, "0");
                 const hours = String(krtTime.getHours()).padStart(2, "0");
                 const minutes = String(krtTime.getMinutes()).padStart(2, "0");
-                return `${month}월${day}일 ${hours}시${minutes}분`;
+                return `${month}/${day} ${hours}:${minutes}`;
             }
 
             function emptyInfo() {
