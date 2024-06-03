@@ -133,7 +133,7 @@
                                         emptySeat++;
                                     }
                                     seatButton.dataset.user = seat.user;
-                                    seatButton.dataset.startTime = seat.start_time;
+                                    seatButton.dataset.startTime = convertToKRT(seat.start_time);
                                     seatButton.dataset.expectedDuration = seat.expected_duration;
                                 }
                             });
@@ -141,6 +141,15 @@
                             usedInfo();
                         }
                     });
+            }
+            function convertToKRT(utcTime) {
+                const date = new Date(utcTime);
+                const krtTime = new Date(date.getTime());
+                const month = String(krtTime.getMonth() + 1).padStart(2, "0");
+                const day = String(krtTime.getDate()).padStart(2, "0");
+                const hours = String(krtTime.getHours()).padStart(2, "0");
+                const minutes = String(krtTime.getMinutes()).padStart(2, "0");
+                return `${month}월${day}일 ${hours}시${minutes}분`;
             }
 
             function emptyInfo() {
@@ -162,6 +171,7 @@
             });
 
             let selectedSeat;
+
             function openModal(seat) {
                 selectedSeat = seat;
                 const seatNumber = seat.innerText;
