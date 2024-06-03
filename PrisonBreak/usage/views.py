@@ -143,16 +143,16 @@ def change_seat(request):
     current_seat = Seat.objects.get(user=request.user)
     new_seat = Seat.objects.get(seat_number=new_seat_number)
 
+    new_seat.is_used = True
+    new_seat.user = request.user
+    new_seat.start_time = current_seat.start_time
+    new_seat.expected_duration = current_seat.expected_duration
+    new_seat.save()
+
     current_seat.is_used = False
     current_seat.user = None
     current_seat.start_time = None
     current_seat.expected_duration = None
     current_seat.save()
-
-    new_seat.is_used = True
-    new_seat.user = request.user
-    new_seat.start_time = timezone.now()
-    new_seat.expected_duration = current_seat.expected_duration
-    new_seat.save()
 
     return JsonResponse({'status': 'success'})

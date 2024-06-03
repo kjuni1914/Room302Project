@@ -1,4 +1,4 @@
-{% load static %}
+{% load static %}   
 <!DOCTYPE html>
 <html lang="kr">
     <head>
@@ -13,18 +13,12 @@
         <div id="status">
             <div style="display: flex; flex-direction: row; align-items: center; margin-bottom: 5px">
                 <button class="circle" id="empty" style="margin-right: 10px; margin-bottom: 0px" disabled></button>
-                <h4 id="emptyInfo" style="margin-right: 10px; margin-bottom: 0px; margin-top: 0px"></h4>
+                <p id="emptyInfo" style="margin-right: 10px; margin-bottom: 0px; margin-top: 0px"></p>
             </div>
+            <br />
             <div style="display: flex; flex-direction: row; align-items: center; margin-bottom: 5px">
                 <button class="circle" id="used" style="margin-right: 10px; margin-bottom: 0px" onclick="openColorModal('used')"></button>
-                <h4 id="usedInfo" style="margin-right: 10px; margin-bottom: 0px; margin-top: 0px"></h4>
-            </div>
-            <div id="colorModal" class="modal">
-                <div class="modal-content">
-                    <p>select color:</p>
-                    <input type="color" id="colorPicker" />
-                    <button id="applyColor">change</button>
-                </div>
+                <p id="usedInfo" style="margin-right: 10px; margin-bottom: 0px; margin-top: 0px"></p>
             </div>
         </div>
 
@@ -87,24 +81,79 @@
         </div>
         <div id="seatModal" class="modal" style="position: absolute">
             <div class="modal-content">
-                <span class="close" onclick="closeModal()" style="position: relative; right: 10px">&times;</span>
+                <span class="close" onclick="closeModal()">&times;</span>
                 <p id="modalText"></p>
                 <button id="actionButton" onclick="toggleSeatStatus()">Action</button>
             </div>
         </div>
-        <!-- time 모달 추가 -->
         <div id="timeModal" class="modal">
             <div class="modal-content">
                 <span class="close" onclick="closeTimeModal()">&times;</span>
                 <p>Please enter the usage time(min):</p>
-                <input type="number" id="usageTime" placeholder="Time in minutes" />
-                <button onclick="enterButtonClick()">Enter</button>
+                <div style="display: flex; align-items: center; gap: 5px">
+                    <input type="number" id="usageTime" placeholder="Time in minutes" />
+                    <button onclick="enterButtonClick()">Enter</button>
+                </div>
+            </div>
+        </div>
+        <div id="colorModal" class="modal">
+            <div class="modal-content">
+                <span class="close" onclick="closeColorModal()">&times;</span>
+                <div style="display: flex; align-items: center; gap: 5px; margin-bottom: 20px">
+                    <p style="margin: 0">Select color:</p>
+                    <input type="color" id="colorPicker" style="width: 25px; height: 25px" />
+                </div>
+                <button id="applyColor">Change</button>
             </div>
         </div>
         <script>
             document.addEventListener("DOMContentLoaded", function () {
                 fetchSeatInfo();
+                setInterval(checkSeatTimes, 1000);
+                setInterval(fetchSeatInfo, 1000);
             });
+
+            function checkSeatTimes() {
+                const now = new Date();
+                console.log("Checking seat times at:", now);
+
+                document.querySelectorAll(".seat.used").forEach((seat) => {
+                    const startTime = new Date(seat.dataset.startTime);
+                    const duration = parseInt(seat.dataset.expectedDuration, 10);
+                    const endTime = new Date(startTime.getTime() + duration * 60000);
+
+                    console.log(`Seat ${seat.innerText} | Start Time: ${startTime} | Duration: ${duration} min | End Time: ${endTime}`);
+
+                    if (now > endTime) {
+                        console.log(`Unselecting seat ${seat.innerText}`);
+                        unselectSeat(seat);
+                    }
+                });
+            }
+
+            function unselectSeat(seat) {
+                const seatNumber = seat.innerText;
+                const csrfToken = "{{ csrf_token }}";
+
+                fetch("/update_seat_status/", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/x-www-form-urlencoded",
+                        "X-CSRFToken": csrfToken,
+                    },
+                    body: `seat_number=${seatNumber}&action=end`,
+                })
+                    .then((response) => response.json())
+                    .then((data) => {
+                        if (data.status === "success") {
+                            console.log(`Seat ${seatNumber} unselected successfully`);
+                            setSeatColor(seat, false, null); // Set seat as empty
+                            fetchSeatInfo(); // Refresh seat info
+                        } else {
+                            console.log(`Failed to unselect seat ${seatNumber}`);
+                        }
+                    });
+            }
 
             let userSeat = null;
 
@@ -133,7 +182,7 @@
                                         emptySeat++;
                                     }
                                     seatButton.dataset.user = seat.user;
-                                    seatButton.dataset.startTime = convertToKRT(seat.start_time);
+                                    seatButton.dataset.startTime = seat.start_time;
                                     seatButton.dataset.expectedDuration = seat.expected_duration;
                                 }
                             });
@@ -153,11 +202,11 @@
             }
 
             function emptyInfo() {
-                document.querySelector("#emptyInfo").innerHTML = `empty: ${emptySeat}`;
+                document.querySelector("#emptyInfo").innerHTML = `Empty: ${emptySeat}`;
             }
 
             function usedInfo() {
-                document.querySelector("#usedInfo").innerHTML = `using: ${usedSeat}`;
+                document.querySelector("#usedInfo").innerHTML = `Using: ${usedSeat}`;
             }
 
             function logout() {
@@ -176,14 +225,16 @@
                 selectedSeat = seat;
                 const seatNumber = seat.innerText;
                 const seatUser = seat.dataset.user;
-                const startTime = seat.dataset.startTime;
+                const startTimeTemp = new Date(seat.dataset.startTime);
+                const startTime = convertToKRT(seat.dataset.startTime);
                 const expectedDuration = seat.dataset.expectedDuration;
+                const endTime = convertToKRT(new Date(startTimeTemp.getTime() + expectedDuration * 60000));
                 const actionButton = document.getElementById("actionButton");
                 document.getElementById("modalText").innerText = `Seat Number: ${seatNumber}`;
 
                 if (seat.classList.contains("used") && seatUser !== "{{ user.username }}") {
                     actionButton.style.display = "none";
-                    document.getElementById("modalText").innerText += `\nUsed by: ${seatUser}\nStart Time: ${startTime}\nExpected Duration: ${expectedDuration} min`;
+                    document.getElementById("modalText").innerText += `\nUsed by: ${seatUser}\nStart Time: ${startTime}\nEnd Time: ${endTime}`;
                 } else {
                     actionButton.style.display = "block";
                     if (seat.classList.contains("used")) {
@@ -193,7 +244,7 @@
                     }
                 }
 
-                document.getElementById("seatModal").style.display = "block";
+                document.getElementById("seatModal").style.display = "flex";
             }
 
             function closeModal() {
@@ -201,7 +252,7 @@
             }
 
             function openTimeModal() {
-                document.getElementById("timeModal").style.display = "block";
+                document.getElementById("timeModal").style.display = "flex";
             }
 
             function closeTimeModal() {
@@ -298,7 +349,7 @@
 
             function openColorModal(statusBtn) {
                 colorBtn = statusBtn;
-                document.getElementById("colorModal").style.display = "block";
+                document.getElementById("colorModal").style.display = "flex";
             }
 
             function closeColorModal() {

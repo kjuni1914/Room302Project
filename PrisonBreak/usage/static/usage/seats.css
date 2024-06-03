@@ -1,5 +1,7 @@
 body {
     margin: 0px;
+    font-family: helvetica;
+    font-weight: 500;
 }
 #logout {
     position: absolute;
@@ -18,10 +20,10 @@ button {
 }
 
 button:hover {
-    filter: brightness(0.9);
+    filter: brightness(0.95);
     z-index: 1;
     transform: scale(1.04);
-    font-size: 15px;
+    /*font-size: 15px;*/
 }
 
 .modal button {
@@ -38,6 +40,7 @@ button:hover {
     padding: 0px;
     margin: 0px;
     border: 1px solid #000;
+    font-size: 15pt;
 }
 .table {
     display: grid;
@@ -61,6 +64,7 @@ button:hover {
     width: 100vw;
     height: 100vh;
 }
+
 .modal {
     display: none;
     position: fixed;
@@ -69,25 +73,57 @@ button:hover {
     top: 0;
     width: 100%;
     height: 100%;
-    overflow: auto;
-    background-color: rgb(0, 0, 0);
     background-color: rgba(0, 0, 0, 0.4);
-    padding-top: 60px;
+    justify-content: center;
+    align-items: center;
 }
+
 .modal-content {
-    background-color: #fefefe;
-    margin: 5% auto;
+    background-color: #fff;
+    font-size: large;
     padding: 20px;
     border: 1px solid #888;
-    width: 80%;
-    max-width: 500px;
+    border-radius: 10px;
+    width: fit-content;
+    height: fit-content;
+    padding-left: 50px;
+    padding-right: 50px;
+    max-width: 80%;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
     text-align: center;
+    box-sizing: border-box;
+    animation: fadeIn 0.3s ease-in-out;
+    position: relative;
+    margin-bottom: 200px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
 }
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(-20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
 .close {
+    position: absolute;
+    top: 15px;
+    right: 15px;
     color: #aaa;
-    float: right;
     font-size: 28px;
     font-weight: bold;
+    cursor: pointer;
+    line-height: 1;
+    height: 10px;
+    width: 10px;
+    transform: translate(-50%, -50%);
 }
 .close:hover,
 .close:focus {
@@ -100,12 +136,11 @@ button:hover {
 .empty {
     background-color: white;
 }
-
 .used {
     background-color: pink;
 }
 .current-user {
-    background-color: yellow;
+    background-color: lightyellow;
 }
 
 /* status color */
@@ -128,13 +163,22 @@ svg {
     position: absolute;
     top: 5vh;
     left: 2vw;
+    border: solid 2px black;
+    border-radius: 10px;
+    padding: 10px;
+    display: flex;
+    flex-direction: column;
+}
+
+p {
+    font-size: 20px;
 }
 
 .circle {
     width: 30px;
     height: 30px;
     border-radius: 50%;
-    border: 1px solid #000;
+    border: 2px solid #000;
 }
 
 #empty:hover {
