@@ -5,6 +5,7 @@ from django.contrib.auth import authenticate, login
 from django.http import HttpResponse, JsonResponse
 from .models import Seat
 from django.contrib.auth.decorators import login_required
+from django.utils import timezone
 
 @login_required(login_url='')
 def seat(request):
@@ -19,41 +20,28 @@ def seat(request):
         'user_seat_number': user_seat.seat_number if user_seat else None
     })
 
+@login_required
 def update_seat_status(request):
-    if request.method == "POST":
-        seat_number = request.POST.get("seat_number")
-        action = request.POST.get("action")
-        usage_time = request.POST.get("usage_time", 0)
+    seat_number = request.POST.get('seat_number')
+    action = request.POST.get('action')
+    usage_time = request.POST.get('usage_time')
 
-        if action == "use" and Seat.objects.filter(user=request.user, is_used=True).exists():
-            return JsonResponse({"status": "error", "message": "You are already using another seat."})
+    seat = Seat.objects.get(seat_number=seat_number)
 
-        seat = Seat.objects.get(seat_number=seat_number)
+    if action == "use":
+        seat.is_used = True
+        seat.user = request.user
+        seat.start_time = timezone.now()
+        seat.expected_duration = usage_time
+    elif action == "end":
+        seat.is_used = False
+        seat.user = None
+        seat.start_time = None
+        seat.expected_duration = None
 
-        if action == "end" and seat.user != request.user:
-            return JsonResponse({"status": "error", "message": "This seat is not your seat."})
+    seat.save()
+    return JsonResponse({'status': 'success', 'is_used': seat.is_used, 'user_seat_number': seat.seat_number})
 
-        if action == "use":
-            seat.is_used = True
-            seat.user = request.user
-            seat.usage_time = usage_time
-        else:
-            seat.is_used = False
-            seat.user = None
-            seat.usage_time = 0
-        seat.save()
-
-        user_seat_number = None
-        if request.user.is_authenticated:
-            user_seat = Seat.objects.filter(user=request.user).first()
-            user_seat_number = user_seat.seat_number if user_seat else None
-
-        return JsonResponse({
-            "status": "success",
-            "seat_number": seat_number,
-            "is_used": seat.is_used,
-            "user_seat_number": user_seat_number
-        })
 
     
 def index(request):
@@ -131,38 +119,40 @@ def change_password(request):
         return render(request, 'usage/changePassword.html')
 
 
+@login_required
 def get_seat_info(request):
-    if request.method == 'GET':
-        seats = Seat.objects.all()
-        seat_data = [
-            {'seat_number': seat.seat_number, 'is_used': seat.is_used, 'user': seat.user.username if seat.user else None}
-            for seat in seats
-        ]
-        user_seat = Seat.objects.filter(user=request.user, is_used=True).first()
-        user_seat_number = user_seat.seat_number if user_seat else None
-        return JsonResponse({'status': 'success', 'seats': seat_data, 'user_seat': user_seat_number})
-    return JsonResponse({'status': 'failure'})
+    seats = Seat.objects.all()
+    user_seat = Seat.objects.filter(user=request.user).first()
+    seat_data = [
+        {
+            'seat_number': seat.seat_number,
+            'is_used': seat.is_used,
+            'user': seat.user.username if seat.user else None,
+            'start_time': seat.start_time,
+            'expected_duration': seat.expected_duration
+        }
+        for seat in seats
+    ]
+    return JsonResponse({'status': 'success', 'seats': seat_data, 'user_seat': user_seat.seat_number if user_seat else None})
+
+@login_required
 
 @login_required
 def change_seat(request):
-    if request.method == 'POST':
-        user = request.user
-        new_seat_number = request.POST.get('new_seat_number')
-        
-        try:
-            new_seat = Seat.objects.get(seat_number=new_seat_number)
-            if new_seat.is_used:
-                return JsonResponse({'status': 'error', 'message': 'Seat already in use'})
-            
-            old_seat = Seat.objects.get(user=user)
-            old_seat.is_used = False
-            old_seat.user = None
-            old_seat.save()
+    new_seat_number = request.POST.get('new_seat_number')
+    current_seat = Seat.objects.get(user=request.user)
+    new_seat = Seat.objects.get(seat_number=new_seat_number)
 
-            new_seat.is_used = True
-            new_seat.user = user
-            new_seat.save()
-            return JsonResponse({'status': 'success'})
-        except Seat.DoesNotExist:
-            return JsonResponse({'status': 'error', 'message': 'Seat does not exist'})
-    return JsonResponse({'status': 'error', 'message': 'Invalid request'})
+    current_seat.is_used = False
+    current_seat.user = None
+    current_seat.start_time = None
+    current_seat.expected_duration = None
+    current_seat.save()
+
+    new_seat.is_used = True
+    new_seat.user = request.user
+    new_seat.start_time = timezone.now()
+    new_seat.expected_duration = current_seat.expected_duration
+    new_seat.save()
+
+    return JsonResponse({'status': 'success'})

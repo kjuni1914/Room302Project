@@ -23,6 +23,11 @@ class UserProfile(models.Model):
         return self.user.username
     
 class Seat(models.Model):
-    seat_number = models.PositiveIntegerField(unique=True)
+    seat_number = models.IntegerField(unique=True)
     is_used = models.BooleanField(default=False)
     user = models.ForeignKey(User, null=True, blank=True, on_delete=models.SET_NULL)
+    start_time = models.DateTimeField(null=True, blank=True)
+    expected_duration = models.IntegerField(null=True, blank=True)
+
+    def __str__(self):
+        return f'Seat {self.seat_number}'

@@ -85,9 +85,9 @@
                 {% endif %} {% endfor %}
             </div>
         </div>
-        <div id="seatModal" class="modal">
+        <div id="seatModal" class="modal" style="position: absolute">
             <div class="modal-content">
-                <span class="close" onclick="closeModal()">&times;</span>
+                <span class="close" onclick="closeModal()" style="position: relative; right: 10px">&times;</span>
                 <p id="modalText"></p>
                 <button id="actionButton" onclick="toggleSeatStatus()">Action</button>
             </div>
@@ -133,6 +133,8 @@
                                         emptySeat++;
                                     }
                                     seatButton.dataset.user = seat.user;
+                                    seatButton.dataset.startTime = seat.start_time;
+                                    seatButton.dataset.expectedDuration = seat.expected_duration;
                                 }
                             });
                             emptyInfo();
@@ -160,17 +162,18 @@
             });
 
             let selectedSeat;
-
             function openModal(seat) {
                 selectedSeat = seat;
                 const seatNumber = seat.innerText;
                 const seatUser = seat.dataset.user;
+                const startTime = seat.dataset.startTime;
+                const expectedDuration = seat.dataset.expectedDuration;
                 const actionButton = document.getElementById("actionButton");
-                document.getElementById("modalText").innerText = "Seat Number: " + seatNumber;
+                document.getElementById("modalText").innerText = `Seat Number: ${seatNumber}`;
 
                 if (seat.classList.contains("used") && seatUser !== "{{ user.username }}") {
                     actionButton.style.display = "none";
-                    document.getElementById("modalText").innerText += `\nUsed by: ${seatUser}`;
+                    document.getElementById("modalText").innerText += `\nUsed by: ${seatUser}\nStart Time: ${startTime}\nExpected Duration: ${expectedDuration} min`;
                 } else {
                     actionButton.style.display = "block";
                     if (seat.classList.contains("used")) {
