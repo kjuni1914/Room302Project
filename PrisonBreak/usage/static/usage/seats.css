@@ -16,7 +16,6 @@ body {
 
 button {
     transition: transform 0.2s ease, font-size 0.2s ease, filter 0.2s ease-in;
-    cursor: pointer;
 }
 
 button:hover {
@@ -41,6 +40,7 @@ button:hover {
     margin: 0px;
     border: 1px solid #000;
     font-size: 15pt;
+    cursor: pointer;
 }
 .table {
     display: grid;
@@ -134,22 +134,22 @@ button:hover {
 
 /* seat color */
 .empty {
-    background-color: white;
+    background-color: #f1f2ff;
 }
 .used {
-    background-color: pink;
+    background-color: rgba(110, 150, 236);
 }
 .current-user {
-    background-color: lightyellow;
+    background-color: rgba(180, 220, 255);
 }
 
 /* status color */
 #status #used {
-    background-color: pink;
+    background-color: rgba(110, 150, 236);
 }
 
 #status #empty {
-    background-color: white;
+    background-color: #f1f2ff;
 }
 
 /* background position */
@@ -181,7 +181,8 @@ p {
     border: 2px solid #000;
 }
 
-#empty:hover {
+#empty:hover,
+#used:hover {
     filter: none;
     z-index: auto;
     transform: none;
