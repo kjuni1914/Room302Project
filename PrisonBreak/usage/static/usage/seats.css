@@ -103,12 +103,12 @@ button:hover {
 
 @keyframes fadeIn {
     from {
-        opacity: 0;
-        transform: translateY(-20px);
+        opacity: 0; /* The element starts completely transparent */
+        transform: translateY(-20px); /* The element starts 20 pixels above its original position */
     }
     to {
-        opacity: 1;
-        transform: translateY(0);
+        opacity: 1; /* The element becomes fully opaque */
+        transform: translateY(0); /* The element returns to its original position */
     }
 }
 

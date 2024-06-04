@@ -11,6 +11,7 @@
         <button id="logout" onclick="logout()">logout</button>
 
         <div id="status">
+            <!-- Status section for displaying seat information -->
             <div style="display: flex; flex-direction: row; align-items: center; margin-bottom: 5px">
                 <button class="circle" id="empty" style="margin-right: 10px; margin-bottom: 0px" disabled></button>
                 <p id="emptyInfo" style="margin-right: 10px; margin-bottom: 0px; margin-top: 0px"></p>
@@ -23,6 +24,7 @@
         </div>
 
         <div id="frame">
+            <!-- SVG for seat layout visualization -->
             <svg width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
                 <line x1="38vw" y1="43vh" x2="88vw" y2="43vh" stroke="black" stroke-width="4" />
                 <line x1="63vw" y1="13vh" x2="63vw" y2="73vh" stroke="black" stroke-width="4" />
@@ -38,6 +40,7 @@
                 <text x="84vw" y="99.5vh" fill="black" font-size="1.8vh" text-anchor="middle" dominant-baseline="middle">Door</text>
             </svg>
             <div>
+                <!-- Container for seats 1-12 -->
                 <div class="container" id="seat1-12">
                     <div class="table">
                         {% for seat in seats %} {% if seat.seat_number <= 4 %}
@@ -55,6 +58,7 @@
                         {% endif %} {% endfor %}
                     </div>
                 </div>
+                <!-- Container for seats 13-24 -->
                 <div class="container" id="seat13-24">
                     <div class="table">
                         {% for seat in seats %} {% if seat.seat_number > 12 and seat.seat_number <= 16 %}
@@ -73,12 +77,14 @@
                     </div>
                 </div>
             </div>
+            <!-- Container for seats 25-28 -->
             <div class="container" id="seat25-28">
                 {% for seat in seats %} {% if seat.seat_number > 24 %}
                 <button id="seat{{ seat.seat_number }}" class="seat {% if seat.is_used %}used{% else %}empty{% endif %} {% if seat.seat_number == user_seat_number %}current-user{% endif %}">{{ seat.seat_number }}</button>
                 {% endif %} {% endfor %}
             </div>
         </div>
+        <!-- Modal for seat actions -->
         <div id="seatModal" class="modal" style="position: absolute">
             <div class="modal-content">
                 <span class="close" onclick="closeModal()">&times;</span>
@@ -86,6 +92,7 @@
                 <button id="actionButton" onclick="toggleSeatStatus()">Action</button>
             </div>
         </div>
+        <!-- Modal for entering usage time -->
         <div id="timeModal" class="modal">
             <div class="modal-content">
                 <span class="close" onclick="closeTimeModal()">&times;</span>
@@ -96,6 +103,7 @@
                 </div>
             </div>
         </div>
+        <!-- Modal for selecting seat color -->
         <div id="colorModal" class="modal">
             <div class="modal-content">
                 <span class="close" onclick="closeColorModal()">&times;</span>
@@ -113,6 +121,9 @@
                 setInterval(fetchSeatInfo, 1000);
             });
 
+            /**
+             * Function to check seat times and unselect seats if time has expired.
+             */
             function checkSeatTimes() {
                 const now = new Date();
                 console.log("Checking seat times at:", now);
@@ -131,6 +142,11 @@
                 });
             }
 
+            /**
+             * Function to unselect a seat.
+             *
+             * @param {Element} seat - The seat element to unselect.
+             */
             function unselectSeat(seat) {
                 const seatNumber = seat.innerText;
                 const csrfToken = "{{ csrf_token }}";
@@ -160,6 +176,9 @@
             let emptySeat = 0;
             let usedSeat = 0;
 
+            /**
+             * Function to fetch seat information and update the UI.
+             */
             function fetchSeatInfo() {
                 emptySeat = 0;
                 usedSeat = 0;
@@ -191,6 +210,13 @@
                         }
                     });
             }
+
+            /**
+             * Function to convert UTC time to KRT (Korea Standard Time).
+             *
+             * @param {string} utcTime - The UTC time string.
+             * @returns {string} The formatted KRT time string.
+             */
             function convertToKRT(utcTime) {
                 const date = new Date(utcTime);
                 const krtTime = new Date(date.getTime());
@@ -201,14 +227,23 @@
                 return `${month}/${day} ${hours}:${minutes}`;
             }
 
+            /**
+             * Function to update empty seat information in the UI.
+             */
             function emptyInfo() {
                 document.querySelector("#emptyInfo").innerHTML = `Empty: ${emptySeat}`;
             }
 
+            /**
+             * Function to update used seat information in the UI.
+             */
             function usedInfo() {
                 document.querySelector("#usedInfo").innerHTML = `Using: ${usedSeat}`;
             }
 
+            /**
+             * Function to log out the user.
+             */
             function logout() {
                 window.location.href = "/";
             }
@@ -221,6 +256,11 @@
 
             let selectedSeat;
 
+            /**
+             * Function to open the seat action modal.
+             *
+             * @param {Element} seat - The seat element to act upon.
+             */
             function openModal(seat) {
                 selectedSeat = seat;
                 const seatNumber = seat.innerText;
@@ -246,18 +286,34 @@
                 document.getElementById("seatModal").style.display = "flex";
             }
 
+            /**
+             * Function to close the seat action modal.
+             */
             function closeModal() {
                 document.getElementById("seatModal").style.display = "none";
             }
 
+            /**
+             * Function to open the time input modal.
+             */
             function openTimeModal() {
                 document.getElementById("timeModal").style.display = "flex";
             }
 
+            /**
+             * Function to close the time input modal.
+             */
             function closeTimeModal() {
                 document.getElementById("timeModal").style.display = "none";
             }
 
+            /**
+             * Function to set the color of a seat.
+             *
+             * @param {Element} seat - The seat element to color.
+             * @param {boolean} isUsed - Whether the seat is in use.
+             * @param {number} userSeatNumber - The user's seat number.
+             */
             function setSeatColor(seat, isUsed, userSeatNumber) {
                 seat.classList.remove("used", "empty", "current-user");
                 seat.classList.add(isUsed ? "used" : "empty");
@@ -266,6 +322,9 @@
                 }
             }
 
+            /**
+             * Function to toggle the status of a seat.
+             */
             function toggleSeatStatus() {
                 if (selectedSeat.classList.contains("used")) {
                     updateSeatStatus("end");
@@ -277,6 +336,11 @@
                 }
             }
 
+            /**
+             * Function to update the status of a seat (use or end usage).
+             *
+             * @param {string} action - The action to perform ("use" or "end").
+             */
             function updateSeatStatus(action) {
                 const seatNumber = selectedSeat.innerText;
                 const csrfToken = "{{ csrf_token }}";
@@ -294,7 +358,7 @@
                     .then((data) => {
                         if (data.status === "success") {
                             setSeatColor(selectedSeat, data.is_used, data.user_seat_number);
-                            userSeat = data.user_seat_number; // 업데이트된 좌석 정보 반영
+                            userSeat = data.user_seat_number; // Update seat info
                             fetchSeatInfo();
                         }
                         closeModal();
@@ -302,6 +366,9 @@
                     });
             }
 
+            /**
+             * Function to change the user's seat.
+             */
             function changeSeat() {
                 const newSeatNumber = selectedSeat.innerText;
                 const csrfToken = "{{ csrf_token }}";
@@ -335,6 +402,9 @@
                 }
             };
 
+            /**
+             * Function to handle the enter button click for usage time input.
+             */
             function enterButtonClick() {
                 const usageTime = document.getElementById("usageTime").value;
                 if (usageTime) {
@@ -346,11 +416,19 @@
 
             let colorBtn = "";
 
+            /**
+             * Function to open the color selection modal.
+             *
+             * @param {string} statusBtn - The ID of the button to set the color for.
+             */
             function openColorModal(statusBtn) {
                 colorBtn = statusBtn;
                 document.getElementById("colorModal").style.display = "flex";
             }
 
+            /**
+             * Function to close the color selection modal.
+             */
             function closeColorModal() {
                 document.getElementById("colorModal").style.display = "none";
             }
@@ -371,11 +449,18 @@
                 document.getElementById("colorModal").style.display = "none";
             };
 
+            /**
+             * Function to get the complement color for a given color.
+             *
+             * @param {string} btncolor - The color to complement.
+             * @returns {string} The complement color.
+             */
             function complementColor(btncolor) {
                 const color = parseInt(btncolor.slice(1), 16);
                 const complement = 0xffffff ^ color;
                 return "#" + complement.toString(16).padStart(6, "0");
             }
+
             window.onkeydown = function (event) {
                 if (event.key === "Escape") {
                     closeModal();
