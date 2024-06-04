@@ -5,14 +5,19 @@
         <meta charset="UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <title>Create New Account</title>
+        <!-- Link to external CSS file for styling -->
         <link rel="stylesheet" href="{% static 'usage/account.css' %}" />
     </head>
     <body>
         <div class="container">
+            <!-- Logo image -->
             <img src="{% static 'usage/logo.png' %}" alt="Logo" />
             <h1>Create New Account</h1>
+            <!-- Form for creating a new account -->
             <form method="POST">
-                {% csrf_token %} {% if error %}
+                {% csrf_token %}
+                <!-- Display error message if there is one -->
+                {% if error %}
                 <p style="color: red">{{ error }}</p>
                 {% endif %}
                 <div class="form-group">
@@ -43,7 +48,9 @@
                     <input type="text" id="security-answer" name="security_answer" required />
                 </div>
                 <div class="button-group">
+                    <!-- Button to go back to the login page -->
                     <button type="button" class="back" onclick="window.location.href='{% url 'user_login' %}'">Back</button>
+                    <!-- Button to submit the form and create a new account -->
                     <button type="submit" class="create">Create</button>
                 </div>
             </form>

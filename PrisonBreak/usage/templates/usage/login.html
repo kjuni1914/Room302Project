@@ -4,56 +4,39 @@
     <head>
         <meta charset="UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <title>Create New Account</title>
-        <!-- Link to external CSS file for styling -->
-        <link rel="stylesheet" href="{% static 'usage/account.css' %}" />
+        <title>Login Page</title>
+        <link rel="stylesheet" href="{% static 'usage/login.css' %}" />
+        <!-- Links to the CSS file for styling -->
     </head>
     <body>
-        <div class="container">
-            <!-- Logo image -->
-            <img src="{% static 'usage/logo.png' %}" alt="Logo" />
-            <h1>Create New Account</h1>
-            <!-- Form for creating a new account -->
-            <form method="POST">
+        <div class="login-container">
+            <img src="{% static 'usage/logo.png' %}" alt="University Logo" class="logo" />
+            <!-- Displays the university logo -->
+            <form id="loginForm" method="post">
+                <!-- The login form with POST method -->
                 {% csrf_token %}
-                <!-- Display error message if there is one -->
-                {% if error %}
-                <p style="color: red">{{ error }}</p>
-                {% endif %}
+                <!-- Adds a CSRF token for security -->
+                <div class="error-message" id="errorMessage">&nbsp; {% if error %} {{ error }} {% endif %} &nbsp;</div>
+                <!-- Displays error messages if any -->
                 <div class="form-group">
-                    <label for="id">ID</label>
+                    <label for="id">Student ID</label>
+                    <!-- Label for the input field for student for student id -->
                     <input type="text" id="id" name="id" required />
+                    <!-- Input field for the student ID -->
                 </div>
                 <div class="form-group">
                     <label for="password">Password</label>
+                    <!-- Label for the password input field -->
                     <input type="password" id="password" name="password" required />
+                    <!-- Input field for the password -->
+                    <a href="{% url 'change_password' %}" class="changePassword">Forgot your password?</a>
+                    <!-- Link to the password reset page -->
                 </div>
-                <div class="form-group">
-                    <label for="reenter-password">Re-enter Password</label>
-                    <input type="password" id="reenter-password" name="reenter_password" required />
-                </div>
-                <div class="form-group">
-                    <label for="security-question">Security Verification Question</label>
-                    <select id="security-question" name="security_question" required>
-                        <option value="" disabled selected>Select your question</option>
-                        <option value="favorite-subject">What is your favorite subject?</option>
-                        <option value="favorite-color">What is your favorite color?</option>
-                        <option value="graduated-elementary">What elementary school did you graduate from?</option>
-                        <option value="birth-city">What city were you born in?</option>
-                        <option value="admired-person">Who is the person you admire the most?</option>
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label for="security-answer">Security Verification Answer</label>
-                    <input type="text" id="security-answer" name="security_answer" required />
-                </div>
-                <div class="button-group">
-                    <!-- Button to go back to the login page -->
-                    <button type="button" class="back" onclick="window.location.href='{% url 'user_login' %}'">Back</button>
-                    <!-- Button to submit the form and create a new account -->
-                    <button type="submit" class="create">Create</button>
-                </div>
+                <button type="submit" class="login-button">Login</button>
+                <!-- Submit button for the form -->
             </form>
+            <a href="{% url 'create_account' %}" class="create-account">Create account</a>
+            <!-- Link to the account creation page -->
         </div>
     </body>
 </html>

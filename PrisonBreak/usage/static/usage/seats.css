@@ -161,13 +161,19 @@ svg {
 /* status position */
 #status {
     position: absolute;
-    top: 5vh;
+    top: 3vh;
     left: 2vw;
     border: solid 2px black;
     border-radius: 10px;
     padding: 10px;
     display: flex;
     flex-direction: column;
+}
+
+@media (max-width: 1400px) {
+    #status {
+        flex-direction: row;
+    }
 }
 
 p {
