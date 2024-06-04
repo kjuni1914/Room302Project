@@ -114,7 +114,7 @@ def change_password(request):
             
             return redirect('user_login')
         except UserProfile.DoesNotExist:
-            return render(request, 'usage/changePassword.html', {'message': 'No matching user information found.'})
+            return render(request, 'usage/changePassword.html', {'message': 'Something is incorrect!'})
     else:
         return render(request, 'usage/changePassword.html')
 

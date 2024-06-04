@@ -1,10 +1,10 @@
-{% load static %}   
+{% load static %}
 <!DOCTYPE html>
 <html lang="kr">
     <head>
         <meta charset="UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <title>Document</title>
+        <title>Seats</title>
         <link rel="stylesheet" href="{% static 'usage/seats.css' %}" />
     </head>
     <body>
@@ -243,7 +243,6 @@
                         actionButton.innerText = userSeat ? "Change" : "Use";
                     }
                 }
-
                 document.getElementById("seatModal").style.display = "flex";
             }
 
@@ -377,6 +376,13 @@
                 const complement = 0xffffff ^ color;
                 return "#" + complement.toString(16).padStart(6, "0");
             }
+            window.onkeydown = function (event) {
+                if (event.key === "Escape") {
+                    closeModal();
+                    closeTimeModal();
+                    closeColorModal();
+                }
+            };
         </script>
     </body>
 </html>
